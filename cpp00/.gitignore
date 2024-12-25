@@ -1,4 +1,10 @@
-megaphone
-phonebook
+.vscode
 
 *.o
+
+megaphone
+
+phonebook
+
+tests
+my_log
