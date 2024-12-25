@@ -15,8 +15,9 @@ class PhoneBook
         int     n;
         int     i;  // index to save to
 
-        void add(void);
-        void search(void);
+        bool add(void);
+        bool search(void);
+        bool exit(void);
 };
 
 #endif

@@ -4,8 +4,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = PhoneBook.hpp Contact.hpp
-SRCS = main.cpp PhoneBook.cpp Contact.cpp
+HEADERS = PhoneBook.hpp Contact.hpp utils.hpp
+SRCS = main.cpp PhoneBook.cpp Contact.cpp utils.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 .PHONY: all clean fclean re
