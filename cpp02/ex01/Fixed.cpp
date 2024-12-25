@@ -1,16 +1,16 @@
 #include <iostream>
 #include "Fixed.hpp"
 
-const int Fixed::fractional_bits = 8;
+const int Fixed::nb_fractional_bits = 8;
 
 Fixed::Fixed(void)
-    : value(0)
+    : raw(0)
 {
     std::cout << "Default constructor called" << std::endl;
 }
 
 Fixed::Fixed(const Fixed &other)
-    : value(other.value)
+    : raw(other.raw)
 {
     std::cout << "Copy constructor called" << std::endl;
 }
@@ -18,7 +18,7 @@ Fixed::Fixed(const Fixed &other)
 Fixed& Fixed::operator=(const Fixed &other)
 {
     std::cout << "Copy assignment operator called" << std::endl;
-    this->value = other.value;
+    this->raw = other.raw;
     return (*this);
 }
 
@@ -30,11 +30,39 @@ Fixed::~Fixed(void)
 int  Fixed::getRawBits(void)
 {
     std::cout << "getRawBits member function called" << std::endl;
-    return (this->value);
+    return (this->raw);
 }
 
 void Fixed::setRawBits(int const raw)
 {
     std::cout << "setRawBits member function called" << std::endl;
-    this->value = raw;
+    this->raw = raw;
+}
+
+
+Fixed::Fixed(const int value)
+{
+    this->raw = value << Fixed::nb_fractional_bits;
+}
+
+Fixed::Fixed(const float value)//TODO
+{
+    this->raw = value;
+}
+
+float Fixed::toFloat(void)//TODO
+{
+    return (this->raw);
+}
+
+int Fixed::toInt(void) const
+{
+    int value = this->raw >> nb_fractional_bits;
+    return (value);
+}
+
+std::ostream& operator<<(std::ostream &os, const Fixed &fixed)//TODO
+{
+    os << fixed.toInt();
+    return (os);
 }
