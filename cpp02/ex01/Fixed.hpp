@@ -6,25 +6,28 @@
 class Fixed
 {
     public:
+        // -------- ex00 --------
         Fixed(void);
         Fixed(const Fixed &other);
         Fixed& operator=(const Fixed &other);
         ~Fixed(void);
 
-        int  getRawBits(void);
+        int  getRawBits(void) const;
         void setRawBits(int const raw);
 
+        // ******** ex01 ********
         Fixed(const int value);
         Fixed(const float value);
 
         float toFloat(void);
         int   toInt(void) const;
 
-        std::ostream& operator<<(std::ostream &os, const Fixed &fixed);
-
     private:
         int              raw;
         static const int nb_fractional_bits;
 };
+
+// ******** ex01 ********
+std::ostream& operator<<(std::ostream &os, const Fixed &fixed);
 
 #endif
