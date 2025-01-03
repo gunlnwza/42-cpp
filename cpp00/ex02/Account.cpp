@@ -63,21 +63,23 @@ void	Account::makeDeposit( int deposit )
     Account::_totalAmount += deposit;
     Account::_totalNbDeposits++;
 
-    int prev_amount = this->_amount;
+    Account::_displayTimestamp();
+    std::cout << " index:" << this->_accountIndex << ";"
+              << "p_amount:" << this->_amount << ";";
+
     this->_amount += deposit;
     this->_nbDeposits++;
 
-    Account::_displayTimestamp();
-    std::cout << " index:" << this->_accountIndex << ";"
-              << "p_amount:" << prev_amount << ";"
-              << "deposit:" << deposit << ";"
+    std::cout << "deposit:" << deposit << ";"
               << "amount:" << this->_amount << ";"
               << "nb_deposits:" << this->_nbDeposits << std::endl;
 }
 
 bool	Account::makeWithdrawal( int withdrawal )
 {
-    int prev_amount = this->_amount;
+    Account::_displayTimestamp();
+    std::cout << " index:" << this->_accountIndex << ";"
+              << "p_amount:" << this->_amount << ";";
 
     if (this->_amount >= withdrawal)
     {
@@ -87,21 +89,16 @@ bool	Account::makeWithdrawal( int withdrawal )
         this->_amount -= withdrawal;
         this->_nbWithdrawals++;
 
-        Account::_displayTimestamp();
-        std::cout << " index:" << this->_accountIndex << ";"
-                << "p_amount:" << prev_amount << ";"
-                << "withdrawal:" << withdrawal << ";"
-                << "amount:" << this->_amount << ";"
-                << "nb_withdrawals:" << this->_nbWithdrawals << std::endl;
+        std::cout << "withdrawal:" << withdrawal << ";"
+                  << "amount:" << this->_amount << ";"
+                  << "nb_withdrawals:" << this->_nbWithdrawals << std::endl;
+        return (true);
     }
     else
     {
-        Account::_displayTimestamp();
-        std::cout << " index:" << this->_accountIndex << ";"
-                << "p_amount:" << prev_amount << ";"
-                << "withdrawal:" << "refused" << std::endl;
+        std::cout << "withdrawal:" << "refused" << std::endl;
+        return (false);
     }
-    return (false);
 }
 
 int		Account::checkAmount( void ) const
