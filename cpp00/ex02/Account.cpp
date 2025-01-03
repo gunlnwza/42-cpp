@@ -1,4 +1,6 @@
 #include <iostream>
+#include <iomanip>
+#include <ctime>
 #include "Account.hpp"
 
 int Account::_nbAccounts = 0;
@@ -118,5 +120,12 @@ void	Account::displayStatus( void ) const
 
 void	Account::_displayTimestamp( void )
 {
-    std::cout << "[19920104_091532]";
+    std::time_t t = std::time(nullptr);
+    std::tm tm = *std::localtime(&t);
+    
+    std::cout << std::put_time(&tm, "[%Y%m%d_%H%M%S]");
+
+    /* Comment the above code and uncomment the line below
+       to check with the original log file */
+    // std::cout << "[19920104_091532]";
 }
