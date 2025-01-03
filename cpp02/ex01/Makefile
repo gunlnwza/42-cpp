@@ -1,11 +1,11 @@
-NAME = a.out
+NAME = main
 
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
 HEADERS = Fixed.hpp
-SRCS = my_test.cpp Fixed.cpp
+SRCS = main.cpp Fixed.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 .PHONY: all clean fclean re
