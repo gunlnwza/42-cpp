@@ -19,7 +19,7 @@ class Fixed
         Fixed(const int value);
         Fixed(const float value);
 
-        float toFloat(void);
+        float toFloat(void) const;
         int   toInt(void) const;
 
     private:

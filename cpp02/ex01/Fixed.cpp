@@ -31,13 +31,13 @@ Fixed::~Fixed(void)
 
 int  Fixed::getRawBits(void) const
 {
-    // std::cerr << "getRawBits member function called" << std::endl;
+    std::cerr << "getRawBits member function called" << std::endl;
     return (this->raw);
 }
 
 void Fixed::setRawBits(int const raw)
 {
-    // std::cerr << "setRawBits member function called" << std::endl;
+    std::cerr << "setRawBits member function called" << std::endl;
     this->raw = raw;
 }
 
@@ -45,8 +45,31 @@ void Fixed::setRawBits(int const raw)
 
 Fixed::Fixed(const int value)
 {
+    std::cerr << "Int constructor called" << std::endl;
+
     int raw = value << Fixed::nb_fractional_bits;
-    this->setRawBits(raw);
+
+    // std::cerr << "********" << std::endl
+    //           << "value=" << value << " ; raw=" << raw << std::endl
+    //           << "********" << std::endl;
+
+    this->raw = raw;
+}
+
+Fixed::Fixed(const float value)
+{
+    std::cerr << "Float constructor called" << std::endl;
+
+    float temp = value * (1 << Fixed::nb_fractional_bits);
+    int raw = temp;
+    if (temp > int(temp)) // if <temp> got .5, then round <raw> up
+        raw++;
+
+    // std::cerr << "********" << std::endl
+    //           << "value=" << value << " ; temp=" << temp << " ; raw=" << raw << std::endl
+    //           << "********" << std::endl;
+
+    this->raw = raw;
 }
 
 int Fixed::toInt(void) const
@@ -55,21 +78,14 @@ int Fixed::toInt(void) const
     return (value);
 }
 
-Fixed::Fixed(const float value)
+float Fixed::toFloat(void) const
 {
-    int raw = value * (1 << Fixed::nb_fractional_bits);
-    this->setRawBits(raw);
-}
-
-float Fixed::toFloat(void)
-{
-    float value = (float) this->getRawBits() / (float) (1 << Fixed::nb_fractional_bits);
+    float value = (float) this->raw / (float) (1 << Fixed::nb_fractional_bits);
     return (value);
 }
 
-
 std::ostream& operator<<(std::ostream &os, const Fixed &fixed)
 {
-    os << ((Fixed) fixed).toFloat();
+    os << fixed.toFloat();
     return (os);
 }

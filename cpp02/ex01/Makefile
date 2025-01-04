@@ -1,4 +1,4 @@
-NAME = main
+NAME = a.out
 
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
