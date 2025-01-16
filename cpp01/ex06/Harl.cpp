@@ -19,24 +19,30 @@
 #define DEFAULT_MESSAGE \
 "Wait. I confused myself!"
 
-void Harl::complain(std::string level)
+void Harl::complain(int level)
 {
-	void (Harl::*funcs[])(void) = {
-		&Harl::debug, &Harl::info, &Harl::warning, &Harl::error
-	};
-	std::string levels[] = {
-		"DEBUG", "INFO", "WARNING", "ERROR"
-	};
-
-	for (int i = 0; i < 4; i++)
+	switch (level)
 	{
-		if (level == levels[i])
-		{
-			(this->*funcs[i])();
-			return ;
-		}
+		case DEBUG:
+			std::cout << "[ DEBUG ]" << std::endl;
+			this->debug();
+			std::cout << std::endl;
+		case INFO:
+			std::cout << "[ INFO ]" << std::endl;
+			this->info();
+			std::cout << std::endl;
+		case WARNING:
+			std::cout << "[ WARNING ]" << std::endl;
+			this->warning();
+			std::cout << std::endl;
+		case ERROR:
+			std::cout << "[ ERROR ]" << std::endl;
+			this->error();
+			std::cout << std::endl;
+			break ;
+		default:
+			std::cout << DEFAULT_MESSAGE << std::endl;
 	}
-	std::cout << DEFAULT_MESSAGE << std::endl;
 }
 
 void Harl::debug(void)
