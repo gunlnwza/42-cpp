@@ -3,27 +3,39 @@
 
 int main(void)
 {
+    ClapTrap clap_trap("Claptrap");
+    std::cout << std::endl;
+
+    std::cout << "a" << std::endl;
     ScavTrap a;
     a.setName("Alex");
-
     std::cout << std::endl;
 
+    std::cout << "b" << std::endl;
     ScavTrap b("Bob");
-
     std::cout << std::endl;
 
+    std::cout << "c" << std::endl;
     ScavTrap c = a;
     c.setName("Cat");
-
     std::cout << std::endl;
 
+    std::cout << a << std::endl
+              << b << std::endl
+              << c << std::endl;
+
+
+    std::cout << "d" << std::endl;
     ScavTrap d;
     d = a;
     d.setName("David");
-
-    ClapTrap e("Elsa");
-
     std::cout << std::endl;
+
+    std::cout << "e" << std::endl;
+    ClapTrap e("Elsa");
+    std::cout << std::endl;
+
+    // d = e; std::cout << std::endl;
 
     std::cout << a << std::endl
               << b << std::endl

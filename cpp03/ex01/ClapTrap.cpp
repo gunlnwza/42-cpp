@@ -9,7 +9,8 @@ ClapTrap::ClapTrap(void)
 
 ClapTrap::ClapTrap(const ClapTrap& other)
     : name(other.name), hit_point(other.hit_point),
-      energy_point(other.energy_point), attack_damage(other.attack_damage)
+      energy_point(other.energy_point), attack_damage(other.attack_damage),
+      type(other.type)
 {
     std::cerr << "ClapTrap's Copy constructor called" << std::endl;
 }
@@ -22,6 +23,7 @@ ClapTrap& ClapTrap::operator=(const ClapTrap& other)
     this->hit_point = other.hit_point;
     this->energy_point = other.energy_point;
     this->attack_damage = other.attack_damage;
+    this->type = other.type;
     return (*this);
 }
 
@@ -105,8 +107,7 @@ void ClapTrap::setAttackDamage(int attack_damage) {
     this->attack_damage = attack_damage;
 }
 
-void ClapTrap::setType(std::string type)
-{
+void ClapTrap::setType(std::string type) {
     this->type = type;
 }
 
@@ -126,8 +127,7 @@ int ClapTrap::getAttackDamage(void) const {
     return (this->attack_damage);
 }
 
-std::string ClapTrap::getType(void) const
-{
+std::string ClapTrap::getType(void) const {
     return (this->type);
 }
 

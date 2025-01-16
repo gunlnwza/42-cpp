@@ -35,7 +35,6 @@ class ClapTrap
         int         hit_point;
         int         energy_point;
         int         attack_damage;
-
         std::string type;
 };
 
