@@ -20,9 +20,15 @@ class ClapTrap
 
         std::string getName(void) const;
         void        setName(std::string name);
+
         int         getHitPoint(void) const;
+        void        setHitPoint(int hit_point);
+
         int         getEnergyPoint(void) const;
+        void        setEnergyPoint(int energy_point);
+
         int         getAttackDamage(void) const;
+        void        setAttackDamage(int attack_damage);
 
     private:
         std::string name;
