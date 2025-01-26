@@ -1,26 +1,25 @@
-#include <iostream>
 #include "Fixed.hpp"
 
-// -------- ex00 --------
+// ---- ex00 -------------------------------------------------------------------
 
 const int Fixed::nb_fractional_bits = 8;
 
 Fixed::Fixed(void)
-    : raw(0)
 {
     std::cerr << "Default constructor called" << std::endl;
+    this->raw = 0;
 }
 
 Fixed::Fixed(const Fixed &other)
-    : raw(other.raw)
 {
     std::cerr << "Copy constructor called" << std::endl;
+    *this = other;
 }
 
 Fixed& Fixed::operator=(const Fixed &other)
 {
     std::cerr << "Copy assignment operator called" << std::endl;
-    this->raw = other.raw;
+    this->raw = other.getRawBits();
     return (*this);
 }
 
@@ -41,19 +40,14 @@ void Fixed::setRawBits(int const raw)
     this->raw = raw;
 }
 
-// ******** ex01 ********
+// -----------------------------------------------------------------------------
+
+// ---- ex01 -------------------------------------------------------------------
 
 Fixed::Fixed(const int value)
 {
     std::cerr << "Int constructor called" << std::endl;
-
-    int raw = value << Fixed::nb_fractional_bits;
-
-    // std::cerr << "********" << std::endl
-    //           << "value=" << value << " ; raw=" << raw << std::endl
-    //           << "********" << std::endl;
-
-    this->raw = raw;
+    this->raw = value << Fixed::nb_fractional_bits;
 }
 
 Fixed::Fixed(const float value)
@@ -62,8 +56,8 @@ Fixed::Fixed(const float value)
 
     float temp = value * (1 << Fixed::nb_fractional_bits);
     int raw = temp;
-    if (temp > int(temp)) // if <temp> got .5, then round <raw> up
-        raw++;
+    // if (temp > int(temp)) // if <temp> got .5, then round <raw> up
+    //     raw++;
 
     // std::cerr << "********" << std::endl
     //           << "value=" << value << " ; temp=" << temp << " ; raw=" << raw << std::endl
@@ -74,8 +68,7 @@ Fixed::Fixed(const float value)
 
 int Fixed::toInt(void) const
 {
-    int value = this->raw >> Fixed::nb_fractional_bits;
-    return (value);
+    return (this->raw >> Fixed::nb_fractional_bits);
 }
 
 float Fixed::toFloat(void) const
@@ -84,8 +77,25 @@ float Fixed::toFloat(void) const
     return (value);
 }
 
+// for debugging purposes
+std::string Fixed::getRawBitsRepresentation(void) const
+{
+    std::string repr = "00000000000000000000000000000000";
+    int         raw = this->raw;
+    for (int i = 31; i >= 0; i--) { // Start from MSB (31st bit)
+        if (raw & (1 << i)) {
+            repr[31 - i] = '1';
+        }
+    }
+
+    std::string repr_with_dot = repr.substr(0, 32 - Fixed::nb_fractional_bits) + "." + repr.substr(32 - Fixed::nb_fractional_bits, 32);    
+    return (repr_with_dot);
+}
+
 std::ostream& operator<<(std::ostream &os, const Fixed &fixed)
 {
     os << fixed.toFloat();
     return (os);
 }
+
+// -----------------------------------------------------------------------------

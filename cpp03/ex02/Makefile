@@ -4,8 +4,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = Entity.hpp Person.hpp
-SRCS = main.cpp Entity.cpp Person.cpp
+HEADERS = ClapTrap.hpp ScavTrap.hpp FlagTrap.hpp
+SRCS = main.cpp ClapTrap.cpp ScavTrap.cpp FlagTrap.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 .PHONY: all clean fclean re

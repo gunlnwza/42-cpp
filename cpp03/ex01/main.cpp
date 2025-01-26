@@ -1,73 +1,55 @@
-#include <iostream>
 #include "ScavTrap.hpp"
 
 int main(void)
 {
-    ClapTrap clap_trap("Claptrap");
-    std::cout << std::endl;
-
-    std::cout << "a" << std::endl;
     ScavTrap a;
     a.setName("Alex");
+
     std::cout << std::endl;
 
-    std::cout << "b" << std::endl;
     ScavTrap b("Bob");
+
     std::cout << std::endl;
 
-    std::cout << "c" << std::endl;
     ScavTrap c = a;
     c.setName("Cat");
+
     std::cout << std::endl;
 
-    std::cout << a << std::endl
-              << b << std::endl
-              << c << std::endl;
-
-
-    std::cout << "d" << std::endl;
     ScavTrap d;
     d = a;
-    d.setName("David");
-    std::cout << std::endl;
-
-    std::cout << "e" << std::endl;
-    ClapTrap e("Elsa");
-    std::cout << std::endl;
-
-    // d = e; std::cout << std::endl;
-
-    std::cout << a << std::endl
-              << b << std::endl
-              << c << std::endl
-              << d << std::endl
-              << e << std::endl;
+    d.setName("Doraemon");
 
     std::cout << std::endl;
 
-    std::cout << "Battle Start!" << std::endl
-              << "********" << std::endl;
+    ClapTrap clap_clap("ClapClap");
+
+    std::cout << std::endl;
+
     a.attack(b.getName());
     b.takeDamage(a.getAttackDamage());
-    a.beRepaired(42);
-
-    b.attack(e.getName());
-    e.takeDamage(100);
-    e.beRepaired(42);
-
-    c.guardGate();
-    std::cout << "********" << std::endl;
+    std::cout << a << std::endl;
+    std::cout << b << std::endl;
 
     std::cout << std::endl;
 
-    std::cout << "Result" << std::endl
-              << "********" << std::endl
-              << a << std::endl
-              << b << std::endl
-              << c << std::endl
-              << d << std::endl
-              << e << std::endl
-              << "********" << std::endl;
+    b.beRepaired(42);
+    b.guardGate();
+    a.attack(b.getName());
+    b.takeDamage(a.getAttackDamage());
+    std::cout << a << std::endl;
+    std::cout << b << std::endl;
+
+    std::cout << std::endl;
+
+    std::cout << a << std::endl;
+
+    std::cout << std::endl;
+
+    b.attack(clap_clap.getName());
+    clap_clap.takeDamage(b.getAttackDamage());
+    std::cout << b << std::endl;
+    std::cout << clap_clap << std::endl;
 
     std::cout << std::endl;
 

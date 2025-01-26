@@ -6,7 +6,7 @@
 class Fixed
 {
     public:
-        // -------- ex00 --------
+        // ---- ex00 -----------------------------------------------------------
         Fixed(void);
         Fixed(const Fixed &other);
         Fixed& operator=(const Fixed &other);
@@ -14,20 +14,26 @@ class Fixed
 
         int  getRawBits(void) const;
         void setRawBits(int const raw);
+        // ---------------------------------------------------------------------
 
-        // ******** ex01 ********
+        // ---- ex01 -----------------------------------------------------------
         Fixed(const int value);
         Fixed(const float value);
 
         float toFloat(void) const;
         int   toInt(void) const;
 
+        // for debugging purposes
+        std::string getRawBitsRepresentation(void) const;
+        // ---------------------------------------------------------------------
+
     private:
         int              raw;
         static const int nb_fractional_bits;
 };
 
-// ******** ex01 ********
+// ---- ex01 ------------------------------------------------------------------
 std::ostream& operator<<(std::ostream &os, const Fixed &fixed);
+// ----------------------------------------------------------------------------
 
 #endif

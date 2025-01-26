@@ -1,5 +1,6 @@
-#include <iostream>
 #include "Fixed.hpp"
+
+// ---- ex00 -------------------------------------------------------------------
 
 const int Fixed::nb_fractional_bits = 8;
 
@@ -38,3 +39,5 @@ void Fixed::setRawBits(int const raw)
     std::cerr << "setRawBits member function called" << std::endl;
     this->raw = raw;
 }
+
+// -----------------------------------------------------------------------------

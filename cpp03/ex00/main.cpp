@@ -6,46 +6,46 @@ int main(void)
     ClapTrap a;
     a.setName("Alex");
 
+    std::cout << std::endl;
+
     ClapTrap b("Bob");
 
+    std::cout << std::endl;
+
     ClapTrap c = a;
+    c.setName("Cat");
+    c.setAttackDamage(100);
+
+    std::cout << std::endl;
     
     ClapTrap d;
     d = a;
+    d.setName("Doraemon");
 
     std::cout << std::endl;
 
-    std::cout << "Battle Start!" << std::endl
-              << "********" << std::endl;
     a.attack(b.getName());
     b.takeDamage(a.getAttackDamage());
     a.beRepaired(42);
-    std::cout << "********" << std::endl;
+    std::cout << "> " << a << std::endl;
+    std::cout << "> " << b << std::endl;
 
     std::cout << std::endl;
 
-    std::cout << "Result" << std::endl
-              << "********" << std::endl
-              << a << std::endl
-              << b << std::endl
-              << "********" << std::endl;
-              
-    std::cout << std::endl;
-
-    std::cout << "ClapTrap " << a.getName() << " wants to fight until he is exhausted. Let's go!" << std::endl
-              << "********" << std::endl;
     for (int i = 0; i < 9; i++)
+    {
         a.attack(b.getName());
+    }
     a.beRepaired(42);
-    std::cout << "********" << std::endl;
+    std::cout << "> " << a << std::endl;
 
     std::cout << std::endl;
 
-    std::cout << "Result" << std::endl
-              << "********" << std::endl
-              << a << std::endl
-              << b << std::endl
-              << "********" << std::endl;
+    c.attack(b.getName());
+    b.takeDamage(c.getAttackDamage());
+    b.attack(c.getName());
+    std::cout << "> " << c << std::endl;
+    std::cout << "> " << b << std::endl;
 
     std::cout << std::endl;
 
