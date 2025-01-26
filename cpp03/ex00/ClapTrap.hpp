@@ -18,8 +18,12 @@ class ClapTrap
         void takeDamage(unsigned int amount);
         void beRepaired(unsigned int amount);
 
+        void putNoHitPointMessage(std::string additional_message);
+        void putNoEnergyPointMessage(std::string additional_message);
+
         std::string getName(void) const;
         void        setName(std::string name);
+        std::string getFullName(void) const;
 
         int         getHitPoint(void) const;
         void        setHitPoint(int hit_point);
