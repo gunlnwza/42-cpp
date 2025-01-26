@@ -55,17 +55,17 @@ void ClapTrap::attack(const std::string& target)
 {
     if (this->hit_point <= 0)
     {
-        std::cout << this->type_name << " " << this->name << " is too broken! Cannot attack " << target << "!" << std::endl;
+        this->putNoHitPointMessage(" Cannot attack " + target + "!");
         return ;
     }
 
     if (this->energy_point <= 0)
     {
-        std::cout << this->type_name << " " << this->name << " has no more energy left! Cannot attack " << target << "!" << std::endl;
+        this->putNoEnergyPointMessage(" Cannot attack " + target + "!");
         return ;
     }
 
-    std::cout << this->type_name << " " << this->name << " attacks " << target << ", causing " << this->attack_damage << " points of damage!" << std::endl;
+    std::cout << this->getFullName() << " attacks " << target << ", causing " << this->attack_damage << " points of damage!" << std::endl;
     this->energy_point -= 1;
 }
 
@@ -73,12 +73,12 @@ void ClapTrap::takeDamage(unsigned int amount)
 {
     if (amount >= (unsigned int) this->hit_point)
     {
-        std::cout << this->type_name << " " << this->name << " got attacked" << ", taking " << this->hit_point << " points of damage! It is now broken!" << std::endl;
+        std::cout << this->getFullName() << " got attacked" << ", taking " << this->hit_point << " points of damage! It is now broken!" << std::endl;
         this->hit_point = 0;
         return ;
     }
 
-    std::cout << this->type_name << " " << this->name << " got attacked" << ", taking " << amount << " points of damage!" << std::endl;
+    std::cout << this->getFullName() << " got attacked" << ", taking " << amount << " points of damage!" << std::endl;
     this->hit_point -= amount;
 }
 
@@ -86,19 +86,30 @@ void ClapTrap::beRepaired(unsigned int amount)
 {
     if (this->hit_point <= 0)
     {
-        std::cout << this->type_name << " " << this->name << " is too broken! Cannot repair self!" << std::endl;
+        this->putNoHitPointMessage(" Cannot repair self!");
         return ;
     }
 
     if (this->energy_point <= 0)
     {
-        std::cout << this->type_name << " " << this->name << " has no more energy left! Cannot repair self!" << std::endl;
+        this->putNoEnergyPointMessage(" Cannot repair self!");
         return ;
     }
 
-    std::cout << this->type_name << " " << this->name << " repaired itself, restoring " << amount << " HP!" << std::endl;
+    std::cout << this->getFullName() << " repaired itself, restoring " << amount << " HP!" << std::endl;
     this->hit_point += amount;
     this->energy_point -= 1;
+}
+
+
+void ClapTrap::putNoHitPointMessage(std::string additional_message)
+{
+    std::cout << this->getFullName() << " is too broken!" << additional_message << std::endl;
+}
+
+void ClapTrap::putNoEnergyPointMessage(std::string additional_message)
+{
+    std::cout << this->getFullName() << " has no more energy left!" << additional_message << std::endl;
 }
 
 
@@ -110,6 +121,11 @@ std::string ClapTrap::getName(void) const
 void ClapTrap::setName(std::string name)
 {
     this->name = name;
+}
+
+std::string ClapTrap::getFullName(void) const
+{
+    return (this->type_name + " " + this->name);
 }
 
 int ClapTrap::getHitPoint(void) const
