@@ -3,7 +3,6 @@
 
 # include "Bureaucrat.hpp"
 
-
 class Form
 {
 	private:

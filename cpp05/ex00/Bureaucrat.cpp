@@ -13,18 +13,18 @@ void	Bureaucrat::assertValidGrade(int grade)
 Bureaucrat::Bureaucrat(void)
 	: name(""), grade(150)
 {
-	// std::cout << "Default Constructor called" << std::endl;
+	// std::cout << "Bureaucrat's Default Constructor called" << std::endl;
 }
 
 Bureaucrat::Bureaucrat(const Bureaucrat &other)
 	: name(other.name), grade(other.grade)
 {
-	// std::cout << "Copy Constructor called" << std::endl;
+	// std::cout << "Bureaucrat's Copy Constructor called" << std::endl;
 }
 
 Bureaucrat& Bureaucrat::operator=(const Bureaucrat &other)
 {
-	// std::cout << "Copy Assignment Operator called" << std::endl;
+	// std::cout << "Bureaucrat's Copy Assignment Operator called" << std::endl;
 
 	// this->name is immutable, so it is kept as-is
 	this->grade = other.grade;
@@ -33,7 +33,7 @@ Bureaucrat& Bureaucrat::operator=(const Bureaucrat &other)
 
 Bureaucrat::~Bureaucrat(void)
 {
-	// std::cout << "Destructor called" << std::endl;
+	// std::cout << "Bureaucrat's Destructor called" << std::endl;
 }
 
 

@@ -16,9 +16,8 @@ Form::Form(void)
 }
 
 Form::Form(const Form& other)
-	: name(other.getName()), isSigned(other.getIsSigned()),
-	gradeToSign(other.getGradeToSign()),
-	gradeToExecute(other.getGradeToExecute())
+	: name(other.name), isSigned(other.isSigned),
+	gradeToSign(other.gradeToSign), gradeToExecute(other.gradeToExecute)
 {
 }
 
@@ -34,7 +33,8 @@ Form::~Form(void)
 
 
 Form::Form(const std::string& name, int gradeToSign, int gradeToExecute)
-	: name(name), gradeToSign(gradeToSign), gradeToExecute(gradeToExecute)
+	: name(name), isSigned(false),
+	gradeToSign(gradeToSign), gradeToExecute(gradeToExecute)
 {
 	Form::assertValidGrade(gradeToSign);
 	Form::assertValidGrade(gradeToExecute);
@@ -64,7 +64,7 @@ int Form::getGradeToExecute(void) const
 
 void Form::beSigned(Bureaucrat& bureaucrat)
 {
-	if (bureaucrat.getGrade() > this->getGradeToSign())
+	if (bureaucrat.getGrade() > this->getGradeToSign())  // if bureaucrat's grade is too low, throw exception
 		throw (Form::GradeTooLowException());
 	this->isSigned = true;
 }
@@ -83,15 +83,12 @@ const char* Form::GradeTooLowException::what() const throw()
 
 std::ostream&	operator<<(std::ostream& os, const Form& f)
 {
-	os << f.getName() << ", form";
-
+	os << f.getName() << ", form (";
 	if (f.getIsSigned())
-		os << " (signed)";
+		os << "SIGNED";
 	else
-		os << " (not signed)";
-	
-	os << "require grade " << f.getGradeToSign() << " to sign, "
-		<< "require grade " << f.getGradeToExecute() << " to execute";
-
+		os << "NOT SIGNED";
+	os << ", lowest can sign: " << f.getGradeToSign()
+		<< ", lowest can execute: " << f.getGradeToExecute() << ")";
 	return (os);
 }
