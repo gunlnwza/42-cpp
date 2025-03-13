@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
 HEADERS = ScalarConverter.hpp
-SRCS = main.cpp ScalarConverter.cpp
+SRCS = main.cpp ScalarConverter.cpp detect_type.cpp process_type.cpp put_fields.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)
