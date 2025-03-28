@@ -4,12 +4,10 @@ int	main(int argc, char **argv)
 {
 	if (argc != 2)
 	{
-		std::cout << "Error: Expect 1 argument" << std::endl;
-		std::cout << "Usage: ./scalar_converter <arg>" << std::endl;
-		return (1);
+		std::cerr << "Error: Expected 1 argument" << std::endl
+				  << "Usage: ./scalar_converter <literal>" << std::endl;
+		return (EXIT_FAILURE);
 	}
-
 	ScalarConverter::convert(argv[1]);
-	
-	return (0);
+	return (EXIT_SUCCESS);
 }

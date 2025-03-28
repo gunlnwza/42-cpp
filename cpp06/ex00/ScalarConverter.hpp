@@ -9,37 +9,14 @@
 # include <string>
 # include <iostream>
 
-enum ScalarType
+typedef enum e_scalar_type
 {
 	TYPE_CHAR,
 	TYPE_INT,
 	TYPE_FLOAT,
 	TYPE_DOUBLE,
 	TYPE_INVALID
-};
-
-enum ScalarState
-{
-	OK,
-	NON_DISPLAYABLE,
-	IMPOSSIBLE,
-	OVERFLOW,
-	UNDERFLOW
-};
-
-struct ScalarFields
-{
-	char				c;
-	int					i;
-	float				f;
-	double				d;
-
-	enum ScalarState	c_state;
-	enum ScalarState	i_state;
-	enum ScalarState	f_state;
-	enum ScalarState	d_state;
-};
-
+}	t_scalar_type;
 
 class ScalarConverter
 {
