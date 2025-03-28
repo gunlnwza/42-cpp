@@ -47,46 +47,72 @@ t_scalar_type	identify_type(const std::string& input)
 	return (TYPE_INVALID);
 }
 
+void	convert_char(const std::string &input, t_scalar_field &field)
+{
+	field.c = input[0];
+	
+	field.i = static_cast<int>(field.c);
+	field.f = static_cast<float>(field.c);
+	field.d = static_cast<double>(field.c);
+}
+
+void	convert_int(const std::string &input, t_scalar_field &field)
+{
+	field.i = std::atoi(input.c_str());
+
+	field.c = static_cast<char>(field.i);
+	field.f = static_cast<float>(field.i);
+	field.d = static_cast<double>(field.i);
+}
+
+void	convert_float(const std::string &input, t_scalar_field &field)
+{
+	field.f = std::atof(input.c_str());
+
+	field.c = static_cast<char>(field.f);
+	field.i = static_cast<int>(field.f);
+	field.d = static_cast<double>(field.f);
+}
+
+void	convert_double(const std::string &input, t_scalar_field &field)
+{
+	field.d = std::atof(input.c_str());
+	
+	field.c = static_cast<char>(field.d);
+	field.i = static_cast<int>(field.d);
+	field.f = static_cast<float>(field.d);
+}
+
+void	print_result(t_scalar_field &field)
+{
+	std::cout	<< "char: " << field.c << std::endl
+				<< "int: " << field.i << std::endl
+				<< "float: " << field.f << std::endl
+				<< "double: " << field.d << std::endl;
+}
+
 void	ScalarConverter::convert(const std::string& input)
 {
-	char	c;
-	int		i;
-	float	f;
-	double	d;
+	t_scalar_field	field;
 
+	std::memset(&field, 0, sizeof(field));
 	switch (identify_type(input))
 	{
 		case TYPE_CHAR:
-			c = input[0];
-			i = static_cast<int>(c);
-			f = static_cast<float>(c);
-			d = static_cast<double>(c);
+			convert_char(input, field);
 			break ;
 		case TYPE_INT:
-			i = std::atoi(input.c_str());
-			c = static_cast<char>(i);
-			f = static_cast<float>(i);
-			d = static_cast<double>(i);
+			convert_int(input, field);
 			break ;
 		case TYPE_FLOAT:
-			f = std::atof(input.c_str());
-			c = static_cast<char>(f);
-			i = static_cast<int>(f);
-			d = static_cast<double>(f);
+			convert_float(input, field);
 			break ;
 		case TYPE_DOUBLE:
-			d = std::atof(input.c_str());
-			c = static_cast<char>(d);
-			i = static_cast<int>(d);
-			f = static_cast<float>(d);
+			convert_double(input, field);
 			break ;
 		case TYPE_INVALID:
 			std::cout << "Error: Scalar's type not recognized" << std::endl;
 			return;
 	}
-
-	std::cout	<< "char: " << c << std::endl
-				<< "int: " << i << std::endl
-				<< "float: " << f << std::endl
-				<< "double: " << d << std::endl;
+	print_result(field);
 }
