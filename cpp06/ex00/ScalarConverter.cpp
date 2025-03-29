@@ -47,7 +47,43 @@ t_scalar_type	identify_type(const std::string& input)
 	return (TYPE_INVALID);
 }
 
-std::string	get_char_string(char c)
+
+template<typename T> const char* get_type_name() {}
+template<> const char* get_type_name<char>() { return "char"; }
+template<> const char* get_type_name<int>() { return "int"; }
+template<> const char* get_type_name<float>() { return "float"; }
+template<> const char* get_type_name<double>() { return "double"; }
+
+template <typename T>
+void	print_limit_depend_on(int overflow)
+{
+	const std::string	types[] = {"char", "int", "float", "double"};
+	const std::string	depend_on_type = get_type_name<T>();
+	const std::string	limit = (overflow == OVERFLOW) ? "overflow" : "underflow";
+
+	for (unsigned long i = 0; i < sizeof(types) / sizeof(types[0]); i++)
+	{
+		std::cout << types[i] << ": ";
+		if (types[i] == depend_on_type)
+			std::cout << limit;
+		else
+			std::cout << "value dependent on " << depend_on_type;
+		std::cout << std::endl;
+	}
+}
+
+
+template <typename T>
+std::string get_string(T value)
+{
+	std::ostringstream oss;
+
+	oss << value;
+	return oss.str();
+}
+
+template <>
+std::string	get_string<char>(char c)
 {
 	std::ostringstream	oss;
 
@@ -60,120 +96,63 @@ std::string	get_char_string(char c)
 	return (oss.str());
 }
 
-
-template <typename T>
-void print_underflow_depend_on()
-{
-	throw std::runtime_error("Unsupported type in print_underflow_depend_on()");
-}
-
 template <>
-void print_underflow_depend_on<int>()
+std::string get_string<double>(double d)
 {
-	std::cout << "char: value dependent on int" << std::endl;
-	std::cout << "int: underflow" << std::endl;
-	std::cout << "float: value dependent on int" << std::endl;
-	std::cout << "double: value dependent on int" << std::endl;
-}
+	std::ostringstream oss;
 
-template <>
-void print_underflow_depend_on<float>()
-{
-	std::cout << "char: value dependent on float" << std::endl;
-	std::cout << "int: value dependent on float" << std::endl;
-	std::cout << "float: underflow" << std::endl;
-	std::cout << "double: value dependent on float" << std::endl;
-}
-
-template <>
-void print_underflow_depend_on<double>()
-{
-	std::cout << "char: value dependent on double" << std::endl;
-	std::cout << "int: value dependent on double" << std::endl;
-	std::cout << "float: value dependent on double" << std::endl;
-	std::cout << "double: underflow" << std::endl;
-}
-
-template <typename T>
-void print_overflow_depend_on()
-{
-	throw std::runtime_error("Unsupported type in print_overflow_depend_on()");
-}
-
-template <>
-void print_overflow_depend_on<int>()
-{
-	std::cout << "char: value dependent on int" << std::endl;
-	std::cout << "int: overflow" << std::endl;
-	std::cout << "float: value dependent on int" << std::endl;
-	std::cout << "double: value dependent on int" << std::endl;
-}
-
-template <>
-void print_overflow_depend_on<float>()
-{
-	std::cout << "char: value dependent on float" << std::endl;
-	std::cout << "int: value dependent on float" << std::endl;
-	std::cout << "float: overflow" << std::endl;
-	std::cout << "double: value dependent on float" << std::endl;
-}
-
-template <>
-void print_overflow_depend_on<double>()
-{
-	std::cout << "char: value dependent on double" << std::endl;
-	std::cout << "int: value dependent on double" << std::endl;
-	std::cout << "float: value dependent on double" << std::endl;
-	std::cout << "double: overflow" << std::endl;
-}
-
-
-template <typename T>
-void	print_char(T value, char c)
-{
-	if (value < std::numeric_limits<char>::lowest())
-		std::cout << "char: " << "underflow" << std::endl;
-	else if (value > std::numeric_limits<char>::max())
-		std::cout << "char: " << "overflow" << std::endl;
+	if (std::isnan(d) || std::isinf(d))
+		oss << d;
 	else
-		std::cout << "char: " << get_char_string(c) << std::endl;
+		oss << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << d;
+	return oss.str();
 }
 
-template <typename T>
-void	print_int(T value, int i)
+template <>
+std::string	get_string<float>(float f)
 {
-	if (value < std::numeric_limits<int>::lowest())
-		std::cout << "int: " << "underflow" << std::endl;
-	else if (value > std::numeric_limits<int>::max())
-		std::cout << "int: " << "overflow" << std::endl;
-	else
-		std::cout << "int: " << i << std::endl;
+	std::ostringstream	oss;
+
+	oss << get_string<double>(f) << "f";
+	return (oss.str());
 }
 
-template <typename T>
-void	print_float(T value, float f)
+
+template <typename T, typename T_limit>
+void	print_type(T value, T_limit limit)
 {
-	if (value < std::numeric_limits<float>::lowest())
-		std::cout << "float: " << "underflow" << std::endl;
-	else if (value > std::numeric_limits<float>::max())
-		std::cout << "float: " << "overflow" << std::endl;
+	std::cout << get_type_name<T>() << ": ";
+	if (std::isnan(value) || std::isinf(value))
+		std::cout << get_string<T>(value);
+	else if (std::isnan(limit) || std::isinf(limit))
+		std::cout << "impossible";
+	else if (limit < std::numeric_limits<T>::lowest())
+		std::cout << "underflow";
+	else if (limit > std::numeric_limits<T>::max())
+		std::cout << "overflow";
 	else
-		std::cout << "float: " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
+		std::cout << get_string<T>(value);
+	std::cout << std::endl;
+}
+
+template <typename T_limit>
+void	print_all(t_scalar_field &field, T_limit limit)
+{
+	print_type(field.c, limit);
+	print_type(field.i, limit);
+	print_type(field.f, limit);
+	print_type(field.d, limit);
 }
 
 
 void	convert_char(const std::string &input, t_scalar_field &field)
 {
 	field.c = input[0];
-	
 	field.i = static_cast<int>(field.c);
 	field.f = static_cast<float>(field.c);
 	field.d = static_cast<double>(field.c);
 
-	std::cout << "char: " << get_char_string(field.c) << std::endl;
-	std::cout << "int: " << field.i << std::endl;
-	std::cout << "float: " << std::fixed << std::setprecision(1) << field.f << "f" << std::endl;
-	std::cout << "double: " << field.d << std::endl;
+	print_all(field, field.c);
 }
 
 void	convert_int(const std::string &input, t_scalar_field &field)
@@ -185,24 +164,20 @@ void	convert_int(const std::string &input, t_scalar_field &field)
 	if (value < std::numeric_limits<int>::lowest() || value > std::numeric_limits<int>::max())
 	{
 		if (value < std::numeric_limits<int>::lowest())
-			print_underflow_depend_on<int>();
+			print_limit_depend_on<int>(UNDERFLOW);
 		else
-			print_overflow_depend_on<int>();
+			print_limit_depend_on<int>(OVERFLOW);
 		return ;
 	}
-	field.i = static_cast<int>(value);
 
+	field.i = static_cast<int>(value);
 	field.c = static_cast<char>(field.i);
 	field.f = static_cast<float>(field.i);
 	field.d = static_cast<double>(field.i);
 
-	print_char<int>(field.i, field.c);
-	std::cout << "int: " << field.i << std::endl;
-	std::cout << "float: " << std::fixed << std::setprecision(1) << field.f << "f" << std::endl;
-	std::cout << "double: " << field.d << std::endl;
+	print_all(field, field.i);
 }
 
-// TODO: handle nanf, and nan
 void	convert_float(const std::string &input, t_scalar_field &field)
 {
 	float	value;
@@ -211,22 +186,20 @@ void	convert_float(const std::string &input, t_scalar_field &field)
 	value = std::strtof(input.c_str(), NULL);
 	if (errno == ERANGE)
 	{
+		std::cout << "float out of range!!!" << std::endl;
 		if (value < std::numeric_limits<float>::lowest())
-			print_underflow_depend_on<float>();
+			print_limit_depend_on<float>(UNDERFLOW);
 		else if (value > std::numeric_limits<float>::max())
-			print_overflow_depend_on<float>();
+			print_limit_depend_on<float>(OVERFLOW);
 		return ;
 	}
-	field.f = value;
 
-	field.i = static_cast<int>(field.f);
+	field.f = value;
 	field.c = static_cast<char>(field.f);
+	field.i = static_cast<int>(field.f);
 	field.d = static_cast<double>(field.f);
 
-	print_char<float>(field.f, field.c);
-	print_int<float>(field.f, field.i);
-	std::cout << "float: " << std::fixed << std::setprecision(1) << field.f << "f" << std::endl;
-	std::cout << "double: " << field.d << std::endl;
+	print_all(field, field.f);
 }
 
 void	convert_double(const std::string &input, t_scalar_field &field)
@@ -238,28 +211,25 @@ void	convert_double(const std::string &input, t_scalar_field &field)
 	if (errno == ERANGE)
 	{
 		if (value < std::numeric_limits<double>::lowest())
-			print_underflow_depend_on<double>();
+			print_limit_depend_on<double>(UNDERFLOW);
 		else if (value > std::numeric_limits<double>::max())
-			print_overflow_depend_on<double>();
+			print_limit_depend_on<double>(OVERFLOW);
 		return ;
 	}
-	field.d = value;
 
-	field.i = static_cast<int>(field.d);
+	field.d = value;
 	field.c = static_cast<char>(field.d);
+	field.i = static_cast<int>(field.d);
 	field.f = static_cast<float>(field.d);
 
-	print_char<double>(field.d, field.c);
-	print_int<double>(field.d, field.i);
-	print_float<double>(field.d, field.f);
-	std::cout << "double: " << field.d << std::endl;
+	print_all(field, field.d);
 }
+
 
 void	ScalarConverter::convert(const std::string& input)
 {
 	t_scalar_field	field;
 
-	std::memset(&field, 0, sizeof(field));
 	switch (identify_type(input))
 	{
 		case TYPE_CHAR:
