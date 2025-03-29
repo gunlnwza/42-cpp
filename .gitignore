@@ -8,6 +8,7 @@ forms
 *_shrubbery
 
 scalar_converter
+serializer
 
 log
 1
