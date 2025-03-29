@@ -58,11 +58,46 @@ void	convert_char(const std::string &input, t_scalar_field &field)
 
 void	convert_int(const std::string &input, t_scalar_field &field)
 {
-	field.i = std::atoi(input.c_str());
+	long	value;
+	char	*ptr;
+
+	errno = 0;
+	value = std::strtol(input.c_str(), &ptr, 10);
+	if (value < std::numeric_limits<int>::lowest())
+	{
+		std::cout << "char: " << "value dependent on int" << std::endl;
+		std::cout << "int: " << "underflow" << std::endl;
+		std::cout << "float: " << "value dependent on int" << std::endl;
+		std::cout << "double: " << "value dependent on int" << std::endl;
+		return ;
+	}
+	else if (std::numeric_limits<int>::max() < value)
+	{
+		std::cout << "char: " << "value dependent on int" << std::endl;
+		std::cout << "int: " << "overflow" << std::endl;
+		std::cout << "float: " << "value dependent on int" << std::endl;
+		std::cout << "double: " << "value dependent on int" << std::endl;
+		return ;
+	}
+	field.i = static_cast<int>(value);
 
 	field.c = static_cast<char>(field.i);
 	field.f = static_cast<float>(field.i);
 	field.d = static_cast<double>(field.i);
+
+	if (field.i < std::numeric_limits<char>::lowest())
+		std::cout << "char: " << "underflow" << std::endl;
+	else if (std::numeric_limits<char>::max() < field.i)
+		std::cout << "char: " << "overflow" << std::endl;
+	else if (std::isprint(field.c))
+		std::cout << "char: " << field.c << std::endl;
+	else if (field.c < 0)
+		std::cout << "char: " << "no character for negative value" << std::endl;
+	else
+		std::cout << "char: " << "Non displayable" << std::endl;
+	std::cout << "int: " << field.i << std::endl;
+	std::cout << "float: " << field.f << std::endl;
+	std::cout << "double: " << field.d << std::endl;
 }
 
 void	convert_float(const std::string &input, t_scalar_field &field)
@@ -85,10 +120,10 @@ void	convert_double(const std::string &input, t_scalar_field &field)
 
 void	print_result(t_scalar_field &field)
 {
-	std::cout	<< "char: " << field.c << std::endl
-				<< "int: " << field.i << std::endl
-				<< "float: " << field.f << std::endl
-				<< "double: " << field.d << std::endl;
+	std::cout << "char: " << field.c << std::endl
+			  << "int: " << field.i << std::endl
+			  << "float: " << field.f << std::endl
+			  << "double: " << field.d << std::endl;
 }
 
 void	ScalarConverter::convert(const std::string& input)
@@ -114,5 +149,4 @@ void	ScalarConverter::convert(const std::string& input)
 			std::cout << "Error: Scalar's type not recognized" << std::endl;
 			return;
 	}
-	print_result(field);
 }
