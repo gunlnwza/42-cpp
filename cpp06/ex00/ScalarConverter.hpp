@@ -2,7 +2,9 @@
 # define SCALAR_CONVERTER_HPP
 
 # include <string>
+# include <sstream>
 # include <iostream>
+# include <iomanip>
 
 typedef enum e_scalar_type
 {
