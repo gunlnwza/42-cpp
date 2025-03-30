@@ -1,11 +1,11 @@
-NAME = scalar_converter
+NAME = identify
 
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = ScalarConverter.hpp
-SRCS = main.cpp ScalarConverter.cpp
+HEADERS = Base.hpp A.hpp B.hpp C.hpp
+SRCS = main.cpp Base.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)
