@@ -25,14 +25,13 @@ void identify(Base* p)
 {
 	std::string	type_name;
 
+	type_name = "?";
 	if (p == dynamic_cast<A*>(p))
 		type_name = "A";
 	else if (p == dynamic_cast<B*>(p))
 		type_name = "B";
 	else if (p == dynamic_cast<C*>(p))
 		type_name = "C";
-	else
-		type_name = "?";
 
 	std::cout << "identify(Base* p): " << type_name << std::endl;
 }
@@ -75,23 +74,31 @@ int	main(int argc, char **argv)
 	std::string	input;
 
 	if (argc == 1)
+	{
 		ptr = generate();
+		identify(ptr);
+		identify(*ptr);
+		delete ptr;
+	}
 	else
 	{
-		input = argv[1];
-		if (input == "A")
-			ptr = new A;
-		else if (input == "B")
-			ptr = new B;
-		else if (input == "C")
-			ptr = new C;
-		else
-			ptr = new Base;
+		for (int i = 1; i < argc; i++)
+		{
+			input = argv[i];
+			if (input == "A")
+				ptr = new A;
+			else if (input == "B")
+				ptr = new B;
+			else if (input == "C")
+				ptr = new C;
+			else
+				ptr = new Base;
+			std::cout << "[ " << input << " ]" << std::endl;
+			identify(ptr);
+			identify(*ptr);
+			delete ptr;
+			std::cout << "----------------------------------------" << std::endl;
+		}
 	}
-
-	identify(ptr);
-	identify(*ptr);
-	delete ptr;
-
 	return (0);
 }
