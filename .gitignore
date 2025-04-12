@@ -2,19 +2,6 @@
 .vscode
 .DS_Store
 
-bureaucrat
-form
-forms
-*_shrubbery
-
-scalar_converter
-serializer
-identify
-
-whatever
-iter
-array
-
 log
 1
 2
@@ -24,3 +11,29 @@ log
 6
 7
 8
+
+# cpp05
+bureaucrat
+form
+forms
+*_shrubbery
+
+# cpp06
+scalar_converter
+serializer
+identify
+
+# cpp07
+whatever
+iter
+array
+
+# cpp08
+span
+easyfind
+mutant_stack
+
+# cpp09
+btc
+RPN
+PmergeMe
