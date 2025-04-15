@@ -1,6 +1,8 @@
 #ifndef SCALAR_CONVERTER_HPP
 # define SCALAR_CONVERTER_HPP
 
+# include <string>
+
 typedef enum e_scalar_type
 {
 	TYPE_CHAR,
@@ -9,6 +11,14 @@ typedef enum e_scalar_type
 	TYPE_DOUBLE,
 	TYPE_INVALID
 }	t_scalar_type;
+
+typedef struct s_result
+{
+	std::string	char_message;
+	std::string	int_message;
+	std::string	float_message;
+	std::string	double_message;
+}	t_result;
 
 class ScalarConverter
 {

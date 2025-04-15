@@ -19,35 +19,38 @@ void	type_test(size_t size_, const char **inputs, const char *banner_message)
 	}
 }
 
-void	batch_test(char *option)
+void	batch_test(const char *option)
 {
 	const char	*chars[] = {
-		"a", "b", " ",
+		"a", "b", " "
 	};
 	const char	*ints[] = {
 		"1", "2", "3", "42", "127", "-128", "128", "-129", "200", "-200",
 		"2147483647", "-2147483648", "2147483648", "-2147483649",
-		"9223372036854775807", "-9223372036854775808", "9223372036854775808", "-9223372036854775809",
+		"9223372036854775807", "-9223372036854775808", "9223372036854775808", "-9223372036854775809"
 	};
 	const char	*floats[] = {
 		"123.456f", "0.0f", "inff", "+inff", "-inff", "nanf",
+		"12345678901234567890.f",
+		"1234567890123456789012345678901234567890.f"
 	};
 	const char	*doubles[] = {
-		"123.456", "0.0", "inf", "+inf", "-inf", "nan"
+		"123.456", "0.0", "inf", "+inf", "-inf", "nan",
+		"12345678901234567890.",
+		"1234567890123456789012345678901234567890.",
+		"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890.",
+		"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890."
 	};
 
-	bool	test_char, test_int, test_float, test_double;
-	option++;
+	bool	test_char = false;
+	bool	test_int = false;
+	bool	test_float = false;
+	bool	test_double = false;
+	option += std::strlen("--test=");
 	while (*option)
 	{
-		if (*option == 'b')
-		{
-			test_char = true;
-			test_int = true;
-			test_float = true;
-			test_double = true;
-		}
-		else if (*option == 'c')
+
+		if (*option == 'c')
 			test_char = true;
 		else if (*option == 'i')
 			test_int = true;
@@ -75,10 +78,10 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		std::cerr << "Usage: ./scalar_converter [ <literal> | -b | -c | -i | -f | -d ]" << std::endl;
+		std::cerr << "Usage: ./scalar_converter [ <literal> | --test=[cifd] ]" << std::endl;
 		return (EXIT_FAILURE);
 	}
-	if (*(argv[1]) == '-')
+	if (std::strncmp(argv[1], "--test=", std::strlen("--test=")) == 0)
 	{
 		batch_test(argv[1]);
 		return (EXIT_SUCCESS);
