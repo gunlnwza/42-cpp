@@ -1,6 +1,5 @@
 #include "RPN.hpp"
 
-
 RPN::RPN(void)
 {}
 
@@ -19,56 +18,32 @@ RPN::~RPN(void)
 {}
 
 
-void	RPN::evaluate(std::string expression)
+std::string	get_token(const std::string& expression, size_t i);
+void		process_token(const std::string& token, std::stack<ll>& stack);
+void		show_result(std::stack<ll>& stack);
+
+void	RPN::evaluate(const std::string& expression) const
 {
-	std::stack<int> stack;
+	std::stack<ll>	stack;
+	std::string		token;
+	size_t			i;
 
-	std::string::iterator it = expression.begin();
-	std::string::iterator it_end = expression.end();
-	for (; it != it_end; ++it)
+	if (expression.length() == 0)
 	{
-		char c = *it;
-		if (c == ' ')
-			continue ;
-
-		if (c == '+' || c == '-' || c == '*' || c == '/')
-		{
-			int b = stack.top();
-			stack.pop();
-			// std::cout << "Pop " << b << std::endl;
-			int a = stack.top();
-			stack.pop();
-			// std::cout << "Pop " << a << std::endl;
-			int value = 0;
-
-			if (c == '+')
-			{
-				value = a + b;
-			}
-			else if (c == '-')
-			{
-				value = a - b;
-			}
-			else if (c == '*')
-			{
-				value = a * b;
-			}
-			else if (c == '/')
-			{
-				value = a / b;
-			}
-			// std::cout << a << " " << c << " " << b << " = " << value << std::endl;
-			stack.push(value);
-		}
-		else if (std::isdigit(c))
-		{
-			int value = static_cast<int>(c - '0');
-			// std::cout << "Push " << value << std::endl;
-			stack.push(value);
-		}
-		else
-			throw (std::out_of_range("Unknown char"));
+		std::cout << "Input is empty" << std::endl;
+		return ;
 	}
-
-	std::cout << "Result is " << stack.top() << std::endl;
+	i = 0;
+	while (i < expression.length())
+	{
+		if (std::isspace(expression[i]))
+		{
+			i++;
+			continue ;
+		}
+		token = get_token(expression, i);
+		process_token(token, stack);
+		i += token.length();
+	}
+	show_result(stack);
 }

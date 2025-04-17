@@ -3,9 +3,10 @@
 
 # include <iostream>
 # include <sstream>
-# include <istream>
-# include <string>
 # include <stack>
+# include <string>
+
+typedef long long ll;
 
 class RPN
 {
@@ -15,7 +16,7 @@ class RPN
 		RPN& operator=(const RPN& other);
 		~RPN(void);
 
-		void	evaluate(std::string expression);
+		void	evaluate(const std::string& expression) const;
 };
 
 #endif
