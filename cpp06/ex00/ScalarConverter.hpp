@@ -1,7 +1,16 @@
 #ifndef SCALAR_CONVERTER_HPP
 # define SCALAR_CONVERTER_HPP
 
+# include <iostream>
+# include <sstream>
+# include <iomanip>
 # include <string>
+
+# include <cstdlib>
+# include <cstring>
+# include <cerrno>
+# include <cfloat>
+# include <climits>
 
 typedef enum e_scalar_type
 {

@@ -1,23 +1,35 @@
 #include <iostream>
-#include <random>
+#include <cstdlib>
 #include <ctime>
 
 #include "A.hpp"
 #include "B.hpp"
 #include "C.hpp"
 
+int	generate_random_int(int min, int max)
+{
+	return min + std::rand() % (max - min + 1);
+}
+
 Base* generate(void)
 {
-	// Courtesy of ChatGPT
-	static std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));  // seed once
-	std::uniform_int_distribution<int> dist(0, 2);  // range: [0, 2]
+	int roll;
 
-	int roll = dist(rng);
+	roll = generate_random_int(0, 2);
 	switch (roll)
 	{
-		case 0: return new A;
-		case 1: return new B;
-		default: return new C;
+		case 0:
+			std::cout << "Generate A" << std::endl;
+			return (new A);
+		case 1:
+			std::cout << "Generate A" << std::endl;
+			return (new B);
+		case 2:
+			std::cout << "Generate C" << std::endl;
+			return (new C);
+		default:
+			std::cout << "Generate A" << std::endl;
+			return (new A);
 	}
 }
 
@@ -47,7 +59,7 @@ void identify(Base& p)
 		(void) a;
 		type_name = "A";
 	}
-	catch (const std::bad_cast& e) {}
+	catch (const std::exception& e) {}
 
 	try
 	{
@@ -55,7 +67,7 @@ void identify(Base& p)
 		(void) b;
 		type_name = "B";
 	}
-	catch (const std::bad_cast& e) {}
+	catch (const std::exception& e) {}
 
 	try
 	{
@@ -63,7 +75,7 @@ void identify(Base& p)
 		(void) c;
 		type_name = "C";
 	}
-	catch (const std::bad_cast& e) {}
+	catch (const std::exception& e) {}
 
 	std::cout << "identify(Base& p): " << type_name << std::endl;
 }
@@ -73,6 +85,7 @@ int	main(int argc, char **argv)
 	Base*		ptr;
 	std::string	input;
 
+	std::srand(std::time(NULL));
 	if (argc == 1)
 	{
 		ptr = generate();
