@@ -1,9 +1,3 @@
-#include <iostream>
-#include <iomanip>
-#include <cerrno>
-#include <cfloat>
-#include <sstream>
-
 #include "ScalarConverter.hpp"
 
 
