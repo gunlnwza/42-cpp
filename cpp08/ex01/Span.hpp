@@ -5,21 +5,29 @@
 
 class Span
 {
-	private:
-		unsigned int		max_length;
-		std::vector<int>	vector;
+    private:
+        unsigned int max_element_count;
+        std::vector<int> vector;
 
-	public:
-		Span(void);
-		Span(unsigned int N);
-		Span(const Span& other);
-		Span& operator=(const Span& other);
-		~Span(void);
+    public:
+        Span();
+        Span(const Span& other);
+        Span& operator=(const Span& other);
+        ~Span();
 
-		void	addNumber(int num);
+        Span(unsigned int N);
 
-		int	shortestSpan(void);
-		int	longestSpan(void);
+        void addNumber(int num);
+
+        unsigned int shortestSpan();
+        unsigned int longestSpan();
+
+        template <typename Iterator>
+        void addNumbers(Iterator begin, Iterator end)
+        {
+            for (Iterator it = begin; it != end; ++it)
+                this->addNumber(*it);
+        }
 };
 
 #endif

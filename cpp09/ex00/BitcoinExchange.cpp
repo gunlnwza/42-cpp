@@ -76,6 +76,8 @@ void	BitcoinExchange::evaluate(const std::string& input_filename)
 	std::string		line;
 	std::ifstream	infile(input_filename);
 
+	// if (data is not init)
+	// 	 throw std::runtime_error("No database supplied");
 	if (!infile)
 	{
 		std::cerr << "Error opening input" << std::endl;

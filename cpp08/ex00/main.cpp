@@ -20,6 +20,7 @@ void	try_to_find(const char* container_name, T& container, int item)
 {
 	typename T::iterator it;
 	
+	// THIS IS std::find USAGE!
 	// std::cout << container_name << ": "; 
 	// it = std::find(container.begin(), container.end(), item);
 	// if (it != container.end())
