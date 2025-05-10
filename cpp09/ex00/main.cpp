@@ -1,31 +1,18 @@
 #include "BitcoinExchange.hpp"
 
-// std::ifstream	*open_infile(const char* str)
-// {
-// 	errno = 0;
-// 	std::string		filename = str;
-// 	std::ifstream	infile(filename);
-	
-// 	if (!infile)
-// 	{
-// 		std::cerr << "Error: cannot read '" << filename << "' (" << std::strerror(errno) << ")" << std::endl;
-// 		return (NULL);
-// 	}
-// }
-
 int	main(int argc, char **argv)
 {
-	if (argc != 2)
-	{
-		std::cerr << "Error: Wrong argument format" << std::endl
-				  << "Usage: ./btc input_filename" << std::endl;
-		return (1);
-	}
+	// if (argc != 2)
+	// {
+	// 	std::cout << "Error: Wrong argument format" << std::endl;
+	// 	std::cout << "Usage: ./btc <query_filename>" << std::endl;
+	// 	return (EXIT_FAILURE);
+	// }
 
-	BitcoinExchange	calculator;
+	BitcoinExchange	calculator("database/data_small.csv");
 
-	calculator.readDatabase("data.csv");
-	calculator.evaluate(argv[1]);
+	// calculator.evaluateQuery(argv[1]);
+	calculator.evaluateQuery("query/input.txt");
 
-	return (0);
+	return (EXIT_SUCCESS);
 }

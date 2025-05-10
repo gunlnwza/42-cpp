@@ -5,22 +5,27 @@
 # include <iostream>
 # include <fstream>
 # include <sstream>
-# include <algorithm>
+
 # include <map>
+
+# include "Date.hpp"
 
 class BitcoinExchange
 {
-	private:
-		std::map<std::string, double> data;
+    private:
+        std::map<Date, double> date_to_exchange_rate;
 
-	public:
-		BitcoinExchange(void);
-		BitcoinExchange(const BitcoinExchange& other);
-		BitcoinExchange& operator=(const BitcoinExchange& other);
-		~BitcoinExchange(void);
+        BitcoinExchange();
 
-		void	readDatabase(const std::string& data_filename);
-		void	evaluate(const std::string& input_filename);
+    public:
+        BitcoinExchange(const BitcoinExchange& other);
+        BitcoinExchange& operator=(const BitcoinExchange& other);
+        ~BitcoinExchange();
+
+        BitcoinExchange(const std::string& database_filename);
+
+        void readDatabase(const std::string& database_filename);
+        void evaluateQuery(const std::string& query_filename);
 };
 
 #endif

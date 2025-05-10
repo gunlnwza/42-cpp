@@ -1,11 +1,11 @@
 NAME = btc
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98
+# CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = BitcoinExchange.hpp
-SRCS = main.cpp BitcoinExchange.cpp
+HEADERS = BitcoinExchange.hpp Date.hpp
+SRCS = main.cpp BitcoinExchange.cpp Date.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)
