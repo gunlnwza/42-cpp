@@ -17,6 +17,9 @@ class BitcoinExchange
 
         BitcoinExchange();
 
+        void read_database_header(const std::string& line);
+        void read_database_line(const std::string& line);
+
     public:
         BitcoinExchange(const BitcoinExchange& other);
         BitcoinExchange& operator=(const BitcoinExchange& other);
@@ -24,8 +27,9 @@ class BitcoinExchange
 
         BitcoinExchange(const std::string& database_filename);
 
-        void readDatabase(const std::string& database_filename);
-        void evaluateQuery(const std::string& query_filename);
+        void read_database(const std::string& database_filename);
+
+        void evaluate_query(const std::string& query_filename);
 };
 
 #endif

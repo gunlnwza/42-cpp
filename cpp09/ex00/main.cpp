@@ -12,7 +12,7 @@ int	main(int argc, char **argv)
 	BitcoinExchange	calculator("database/data_small.csv");
 
 	// calculator.evaluateQuery(argv[1]);
-	calculator.evaluateQuery("query/input.txt");
+	calculator.evaluate_query("query/input.txt");
 
 	return (EXIT_SUCCESS);
 }

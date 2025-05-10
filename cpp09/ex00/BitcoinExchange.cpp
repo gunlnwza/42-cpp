@@ -23,7 +23,7 @@ BitcoinExchange::~BitcoinExchange()
 
 BitcoinExchange::BitcoinExchange(const std::string& database_filename)
 {
-    this->readDatabase(database_filename);
+    this->read_database(database_filename);
 }
 
 
@@ -86,7 +86,33 @@ static std::pair<std::string, std::string> split_two(const std::string& line, co
     return (pair);
 }
 
-void BitcoinExchange::readDatabase(const std::string& database_filename)
+void BitcoinExchange::read_database_header(const std::string& line)
+{
+    std::pair<std::string, std::string> tokens;
+
+    tokens = split_two(line, ",");
+    if (tokens.first != "date" || tokens.second != "exchange_rate")
+        throw (std::runtime_error("invalid header name(s)"));
+}
+
+void BitcoinExchange::read_database_line(const std::string& line)
+{
+    std::pair<std::string, std::string> tokens;
+    Date                                date;
+    char                                *ptr;
+    double                              exchange_rate;
+
+    tokens = split_two(line, ",");
+    date.parse_date(tokens.first);
+    exchange_rate = std::strtod(tokens.second.c_str(), &ptr);
+    if (*ptr != '\0')
+        throw (std::runtime_error("not a number"));
+    if (exchange_rate < 0)
+        throw (std::runtime_error("negative exchange_rate"));
+    this->date_to_exchange_rate[date] = exchange_rate;
+}
+
+void BitcoinExchange::read_database(const std::string& database_filename)
 {
     std::ifstream                       database = open_infile(database_filename);
     size_t                              line_nb = 1;
@@ -98,33 +124,12 @@ void BitcoinExchange::readDatabase(const std::string& database_filename)
     while (std::getline(database, line))
     {
         try {
-            tokens = split_two(line, ",");
+            if (line_nb == 1)
+                this->read_database_header(line);
+            else
+                this->read_database_line(line);
         } catch (const std::runtime_error& e) {
             throw (get_error(line_nb, line, e.what()));
-        }
-
-        if (line_nb == 1)
-        {
-            if (tokens.first != "date" || tokens.second != "exchange_rate")
-                throw (get_error(line_nb, line, "invalid header name(s)"));
-        }
-        else
-        {
-            Date date;
-            try {
-                date.parse_date(tokens.first);
-            } catch (const std::runtime_error& e) {
-                throw (get_error(line_nb, line, e.what()));
-            }
-
-            char *ptr;
-            double exchange_rate = std::strtod(tokens.second.c_str(), &ptr);
-            if (*ptr != '\0')
-                throw (get_error(line_nb, line, "not a number"));
-            if (exchange_rate < 0)
-                throw (get_error(line_nb, line, "negative exchange_rate"));
-        
-            this->date_to_exchange_rate[date] = exchange_rate;
         }
         line_nb++;
     }
@@ -134,7 +139,7 @@ void BitcoinExchange::readDatabase(const std::string& database_filename)
     }
 }
 
-void BitcoinExchange::evaluateQuery(const std::string& query_filename)
+void BitcoinExchange::evaluate_query(const std::string& query_filename)
 {
     std::ifstream                       query = open_infile(query_filename);
     size_t                              line_nb = 1;

@@ -1,5 +1,7 @@
 #include "Date.hpp"
 
+#define MIN_YEAR 1900
+
 
 Date::Date() {}
 
@@ -21,6 +23,30 @@ Date& Date::operator=(const Date& other)
 Date::~Date() {}
 
 
+bool is_leap_year(int year)
+{
+    if (year % 400 == 0)
+        return (true);
+    if (year % 100 == 0)
+        return (false);
+    return (year % 4 == 0);
+}
+
+bool is_valid_date(int year, int month, int day)
+{
+    static const int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    int              max_day;
+
+    if (year < MIN_YEAR)
+        throw (std::runtime_error("unsupported historical date"));
+    if (!(1 <= month && month <= 12))
+        return (false);
+    max_day = days_in_month[month - 1];
+    if (month == 2 && is_leap_year(year))
+        max_day = 29;
+    return (1 <= day && day <= max_day);
+}
+
 void Date::parse_date(const std::string& date_str)
 {
     // parse
@@ -41,7 +67,7 @@ void Date::parse_date(const std::string& date_str)
         s.erase(0, pos + delimiter.length());
     }
     if (pos != std::string::npos)
-        throw (std::runtime_error("more than 2 tokens"));
+        throw (std::runtime_error("invalid date"));
 
     // validate
     char *ptr;
@@ -50,9 +76,7 @@ void Date::parse_date(const std::string& date_str)
     this->month = std::strtol(m.c_str(), &ptr, 10);
     this->day = std::strtol(d.c_str(), &ptr, 10);
 
-    if (this->year <= 1970
-        || this->month <= 0 || this->month >= 13
-        || this->day <= 0 || this->day >= 31)
+    if (!is_valid_date(this->year, this->month, this->day))
         throw (std::runtime_error("invalid date"));
 }
 
