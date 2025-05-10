@@ -38,7 +38,7 @@ bool is_valid_date(int year, int month, int day)
     int              max_day;
 
     if (year < MIN_YEAR)
-        throw (std::runtime_error("unsupported historical date"));
+        throw (std::runtime_error("invalid date: unsupported historical date"));
     if (!(1 <= month && month <= 12))
         return (false);
     max_day = days_in_month[month - 1];
@@ -47,9 +47,19 @@ bool is_valid_date(int year, int month, int day)
     return (1 <= day && day <= max_day);
 }
 
+long parse_long(const std::string& s)
+{
+    char *ptr;
+    long value;
+
+    value = std::strtol(s.c_str(), &ptr, 10);
+    if (*ptr != '\0')
+        throw (std::runtime_error("invalid date: invalid number(s)"));
+    return (value);
+}
+
 void Date::parse_date(const std::string& date_str)
 {
-    // parse
     const std::string   delimiter = "-";
     std::string         s(date_str);
     size_t              pos;
@@ -60,30 +70,37 @@ void Date::parse_date(const std::string& date_str)
         pos = s.find(delimiter);
         switch (i)
         {
-            case 0: y = s.substr(0, pos); break ;        
-            case 1: m = s.substr(0, pos); break ;
-            case 2: d = s.substr(0, pos); break ;
+            case 0:
+                if (pos == std::string::npos)
+                    throw (std::runtime_error("invalid date: less than 3 tokens"));
+                y = s.substr(0, pos);
+                break ;
+            case 1:
+                if (pos == std::string::npos)
+                    throw (std::runtime_error("invalid date: less than 3 tokens"));
+                m = s.substr(0, pos);
+                break ;
+            case 2:
+                d = s.substr(0, pos);
+                break ;
         }
         s.erase(0, pos + delimiter.length());
     }
     if (pos != std::string::npos)
-        throw (std::runtime_error("invalid date"));
+        throw (std::runtime_error("invalid date: more than 3 tokens"));
 
-    // validate
-    char *ptr;
-
-    this->year = std::strtol(y.c_str(), &ptr, 10);
-    this->month = std::strtol(m.c_str(), &ptr, 10);
-    this->day = std::strtol(d.c_str(), &ptr, 10);
-
+    this->year = parse_long(y);
+    this->month = parse_long(m);
+    this->day = parse_long(d);
     if (!is_valid_date(this->year, this->month, this->day))
-        throw (std::runtime_error("invalid date"));
+        throw (std::runtime_error("invalid date: not a valid date"));
 }
 
 Date::Date(const std::string& date_str)
 {
     this->parse_date(date_str);
 }
+
 
 bool Date::operator<(const Date& other) const
 {
@@ -93,6 +110,11 @@ bool Date::operator<(const Date& other) const
         return (this->month < other.month);
     return (this->day < other.day);
 }
+bool Date::operator<=(const Date& other) const { return (*this < other || *this == other); }
+bool Date::operator>(const Date& other) const { return (other < *this); }
+bool Date::operator>=(const Date& other) const { return (*this > other || *this == other); }
+bool Date::operator==(const Date& other) const { return (this->year == other.year && this->month == other.month && this->day == other.day); }
+bool Date::operator!=(const Date& other) const { return (!(*this == other)); }
 
 
 int Date::get_year() const { return (this->year); }
@@ -102,6 +124,8 @@ int Date::get_day() const { return (this->day); }
 
 std::ostream& operator<<(std::ostream& os, const Date& date)
 {
-    os << date.get_year() << "-" << date.get_month() << "-" << date.get_day();
+    os << std::setw(4) << std::setfill('0') << date.get_year() << "-"
+        << std::setw(2) << std::setfill('0') << date.get_month() << "-"
+        << std::setw(2) << std::setfill('0') << date.get_day();
     return (os);
 }

@@ -4,6 +4,7 @@
 # include <string>
 
 # include <iostream>
+# include <iomanip>
 
 class Date
 {
@@ -22,6 +23,11 @@ class Date
         Date(const std::string& date_str);
 
         bool operator<(const Date& other) const;
+        bool operator<=(const Date& other) const;
+        bool operator>(const Date& other) const;
+        bool operator>=(const Date& other) const;
+        bool operator==(const Date& other) const;
+        bool operator!=(const Date& other) const;
 
         int get_year() const;
         int get_month() const;
