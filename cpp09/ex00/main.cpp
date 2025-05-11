@@ -1,5 +1,7 @@
 #include "BitcoinExchange.hpp"
 
+// Containers used: std::map, std::pair
+
 int	main(int argc, char **argv)
 {
 	if (argc != 2)
