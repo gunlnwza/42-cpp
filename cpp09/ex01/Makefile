@@ -4,15 +4,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = RPN.hpp
-
-SRCS = main.cpp \
-	RPN.cpp \
-	subroutines/is_operator.cpp \
-	subroutines/get_token.cpp \
-	subroutines/process_token.cpp \
-	subroutines/show_result.cpp
-
+HEADERS = RPN.hpp Token.hpp
+SRCS = main.cpp RPN.cpp Token.cpp 
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)

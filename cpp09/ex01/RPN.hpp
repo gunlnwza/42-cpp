@@ -1,22 +1,29 @@
 #ifndef RPN_HPP
 # define RPN_HPP
 
-# include <iostream>
-# include <sstream>
-# include <stack>
 # include <string>
 
-typedef long long ll;
+# include <stack>
+# include <queue>
+
+# include "Token.hpp"
 
 class RPN
 {
-	public:
-		RPN(void);
-		RPN(const RPN& other);
-		RPN& operator=(const RPN& other);
-		~RPN(void);
+    private:
+        std::queue<Token> tokens;
+        std::stack<Token> stack;
 
-		void	evaluate(const std::string& expression) const;
+        void tokenize(const std::string& expression);
+        void process_current_token();
+
+    public:
+        RPN();
+        RPN(const RPN& other);
+        RPN& operator=(const RPN& other);
+        ~RPN();
+
+        void evaluate(const std::string& expression);
 };
 
 #endif
