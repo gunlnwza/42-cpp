@@ -11,8 +11,8 @@
 class RPN
 {
     private:
-        std::queue<Token> tokens;
-        std::stack<Token> stack;
+        std::queue<Token*> tokens;
+        std::stack<Token*> stack;
 
         void tokenize(const std::string& expression);
         void process_current_token();
