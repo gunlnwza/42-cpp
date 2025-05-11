@@ -21,12 +21,16 @@ DequeSorter::~DequeSorter()
 
 void DequeSorter::read_inputs(const std::vector<int>& inputs)
 {
-    for (std::vector<int>::const_iterator it = inputs.begin(); it != inputs.end(); ++it)
-        this->deque.push_back(*it);
+    this->deque.assign(inputs.begin(), inputs.end());
 }
 
 
-void DequeSorter::sort()
+void DequeSorter::merge_insertion_sort()
+{
+    
+}
+
+void DequeSorter::selection_sort()
 {
     for (size_t i = 0; i < deque.size(); i++)
     {

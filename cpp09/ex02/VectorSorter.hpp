@@ -16,7 +16,8 @@ class VectorSorter : public Sorter
 
         void read_inputs(const std::vector<int>& inputs);
         
-        void sort();
+        void merge_insertion_sort();
+        void selection_sort();
 
         const std::vector<int>& get_vector() const;
 };

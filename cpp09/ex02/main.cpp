@@ -37,6 +37,7 @@ int F(int n)
     return sum;
 }
 
+// ./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`
 int	main(int argc, char **argv)
 {
     std::vector<int>    inputs;
@@ -51,20 +52,22 @@ int	main(int argc, char **argv)
     }
     const size_t N = inputs.size();
 
-    vector_sorter.read_inputs(inputs);
     vector_sorter.time_start();
-    vector_sorter.sort();
+    vector_sorter.read_inputs(inputs);
+    // vector_sorter.merge_insertion_sort();
+    vector_sorter.selection_sort();
     vector_sorter.time_stop();
 
-    deque_sorter.read_inputs(inputs);
     deque_sorter.time_start();
-    deque_sorter.sort();
+    deque_sorter.read_inputs(inputs);
+    // deque_sorter.merge_insertion_sort();
+    deque_sorter.selection_sort();
     deque_sorter.time_stop();
 
     std::cout << "Before: " << inputs << std::endl;
     std::cout << "After:  " << vector_sorter.get_vector() << std::endl;
-    std::cout << "Time to process a range of " << N << " elements with std::vector : " << vector_sorter.get_microseconds() << "ms" << std::endl;
-    std::cout << "Time to process a range of " << N << " elements with std::deque : " << deque_sorter.get_microseconds() << "ms" << std::endl;
+    std::cout << "Time to process a range of " << N << " elements with std::vector : " << vector_sorter.get_microseconds() << " microseconds" << std::endl;
+    std::cout << "Time to process a range of " << N << " elements with std::deque : " << deque_sorter.get_microseconds() << " microseconds" << std::endl;
 
     std::cout << "[ DEBUG ]" << std::endl;
     std::cout << "vector's compare count: " << vector_sorter.get_compare_count() << std::endl;

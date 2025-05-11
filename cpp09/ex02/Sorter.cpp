@@ -46,7 +46,7 @@ long Sorter::get_microseconds() const
         seconds--;
         microseconds += 1000000;
     }
-    return (1000 * seconds + microseconds / 1000);
+    return (1000000 * seconds + microseconds);
 }
 
 

@@ -24,7 +24,12 @@ void VectorSorter::read_inputs(const std::vector<int>& inputs)
 }
 
 
-void VectorSorter::sort()
+void VectorSorter::merge_insertion_sort()
+{
+    
+}
+
+void VectorSorter::selection_sort()
 {
     for (size_t i = 0; i < vector.size(); i++)
     {

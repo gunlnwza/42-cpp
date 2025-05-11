@@ -24,7 +24,7 @@ class Sorter
 
         virtual void read_inputs(const std::vector<int>& inputs) = 0;
 
-        virtual void sort() = 0;
+        virtual void merge_insertion_sort() = 0;
 
         void time_start();
         void time_stop();
