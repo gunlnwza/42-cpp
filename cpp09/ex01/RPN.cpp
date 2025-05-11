@@ -19,103 +19,88 @@ RPN::~RPN()
 {}
 
 
-static Token* make_token(const std::string& expression, size_t i)
+static char pop(std::queue<char>& queue)
 {
-    char c;
+    char    value;
 
-    c = expression[i];
-    if (std::isdigit(c))
-    {
-        return (new Token(c - '0'));
-    }
-    switch (c)
-    {
-        case '+': return (new Token(ADD));
-        case '-': return (new Token(SUB));
-        case '*': return (new Token(MUL));
-        case '/': return (new Token(DIV));
-    }
-    throw (std::runtime_error("unknown character"));
+    value = queue.front();
+    queue.pop();
+    return (value);
 }
+
+static long pop(std::stack<long>& stack)
+{
+    long    value;
+
+    value = stack.top();
+    stack.pop();
+    return (value);
+}
+
 
 void RPN::tokenize(const std::string& expression)
 {
-    Token* token;
+    char    c;
 
     for (size_t i = 0; i < expression.length(); i++)
     {
-        if (std::isspace(expression[i]))
+        c = expression[i];
+        if (std::isspace(c))
             continue ;
-        token = make_token(expression, i);
-        tokens.push(token);
+        if (std::isdigit(c) || c == '+' || c == '-' || c == '*' || c == '/')
+            tokens.push(c);
+        else
+            throw (std::runtime_error("tokenize: unknown character"));
+    }
+}
+
+
+static long calculate_operation(long a, char op, long b)
+{
+    switch (op)
+    {
+        case '+': return (a + b);
+        case '-': return (a - b);
+        case '*': return (a * b);
+        case '/': return (a / b);
+        default: throw (std::runtime_error("process_current_token: unknown operator"));
     }
 }
 
 void RPN::process_current_token()
 {
-    Token* token;
+    char    token;
+    long    a;
+    long    b;
+    long    result;
 
-    token = tokens.front();
-    tokens.pop();
-    if (token->get_type() == NUMBER)
-    {
-        // std::cout << "push " << *token << std::endl;;
-        stack.push(token);
-    }
+    token = pop(tokens);
+    if (std::isdigit(token))
+        stack.push(token - '0');
     else
     {
-        Token* left;
-        Token* right;
-        long result;
-
-        left = stack.top();
-        stack.pop();
-        // std::cout << "pop " << *left << std::endl;;
-        right = stack.top();
-        // std::cout << "pop " << *right << std::endl;;
-        stack.pop();
-        switch (token->get_type())
-        {
-            case ADD:
-                result = left->get_value() + right->get_value();
-                break ;
-            case SUB:
-                result = left->get_value() - right->get_value();
-                break ;
-            case MUL:
-                result = left->get_value() * right->get_value();
-                break ;
-            case DIV:
-                result = left->get_value() / right->get_value();
-                break ;
-            default:
-                throw (std::runtime_error("process_current_token: unknown operator"));
-        }
-        // std::cout << "push " << result << std::endl;
-        stack.push(new Token(result));
-        delete left;
-        delete right;
-
-        delete token;
+        if (stack.empty())
+            throw (std::runtime_error("process_current_token: no num in stack for left num"));
+        a = pop(stack);
+        if (stack.empty())
+            throw (std::runtime_error("process_current_token: no num in stack for right num"));
+        b = pop(stack);
+        result = calculate_operation(a, token, b);
+        stack.push(result);
     }
 }
 
 void RPN::evaluate(const std::string& expression)
 {
+    long result;
+
     tokenize(expression);
     while (!tokens.empty())
         process_current_token();
+    if (stack.empty())
+        throw (std::runtime_error("evaluate: no result num"));
+    result = pop(stack);
     if (!stack.empty())
-    {
-        Token* result = stack.top();
-        stack.pop();
-        if (stack.empty())
-        {
-            std::cout << result->get_value() << std::endl;
-            delete result;
-        }
-        else
-            throw (std::runtime_error("evaluate: still have numbers in stack"));
-        
-    }
+        throw (std::runtime_error("evaluate: result nums more than one"));
+    std::cout << result << std::endl;
 }

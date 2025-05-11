@@ -4,8 +4,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = RPN.hpp Token.hpp
-SRCS = main.cpp RPN.cpp Token.cpp 
+HEADERS = RPN.hpp
+SRCS = main.cpp RPN.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)
