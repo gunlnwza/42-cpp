@@ -25,11 +25,15 @@ void DequeSorter::read_inputs(const std::vector<int>& inputs)
         this->deque.push_back(*it);
 }
 
+
 void DequeSorter::sort()
 {
-    for (size_t i = 0; i < deque.size(); i++) {
+    for (size_t i = 0; i < deque.size(); i++)
+    {
         size_t min_index = i;
-        for (size_t j = i + 1; j < deque.size(); j++) {
+        for (size_t j = i + 1; j < deque.size(); j++)
+        {
+            compare_count++;
             if (deque[j] < deque[min_index])
                 min_index = j;
         }

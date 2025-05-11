@@ -31,6 +31,7 @@ void VectorSorter::sort()
         size_t min_index = i;
         for (size_t j = i + 1; j < vector.size(); j++)
         {
+            compare_count++;
             if (vector[j] < vector[min_index])
                 min_index = j;
         }

@@ -2,6 +2,7 @@
 
 
 Sorter::Sorter()
+: compare_count(0)
 {
     std::memset(&this->t_start, 0, sizeof(t_start));
     std::memset(&this->t_stop, 0, sizeof(t_stop));
@@ -33,7 +34,7 @@ void Sorter::time_stop()
     gettimeofday(&this->t_stop, NULL);
 }
 
-long Sorter::get_microseconds()
+long Sorter::get_microseconds() const
 {
     int seconds;
     int microseconds;
@@ -46,4 +47,10 @@ long Sorter::get_microseconds()
         microseconds += 1000000;
     }
     return (1000 * seconds + microseconds / 1000);
+}
+
+
+int Sorter::get_compare_count() const
+{
+    return (this->compare_count);
 }

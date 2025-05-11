@@ -13,6 +13,9 @@ class Sorter
         struct timeval t_start;
         struct timeval t_stop;
 
+    protected:
+        int compare_count;
+
     public:
         Sorter();
         Sorter(const Sorter& other);
@@ -20,12 +23,14 @@ class Sorter
         virtual ~Sorter() = 0;
 
         virtual void read_inputs(const std::vector<int>& inputs) = 0;
-        
+
         virtual void sort() = 0;
 
         void time_start();
         void time_stop();
-        long get_microseconds();
+        long get_microseconds() const;
+
+        int get_compare_count() const;
 };
 
 #endif
