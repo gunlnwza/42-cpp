@@ -58,7 +58,7 @@ int main()
 			std::cout << *it << std::endl;
 			++it;
 		}
-		// std::list<int> l(list);
+		std::list<int> l(list);
 	}
 	return (0);
 }
