@@ -2,6 +2,7 @@ import random
 import time
 import sys
 from collections import Counter
+import math
 
 sys.setrecursionlimit(42)
 
@@ -167,7 +168,7 @@ class MergeInsertionSortStrategy(ISortStrategy):
         return self._merge(left_pairs, right_pairs)
 
     def sort(self, arr: list[int]):
-        print(arr)
+        # print(arr)
         
         pairs = []
         for i in range(0, len(arr), 2):
@@ -176,43 +177,45 @@ class MergeInsertionSortStrategy(ISortStrategy):
             else:
                 pairs.append([arr[i], None])
         
-        print()
-        print("pairs", pairs)
+        # print()
+        # print("pairs", pairs)
         pairs = self._sort(pairs)
-        print("sorted pairs", pairs)
-        print()
+        # print("sorted pairs", pairs)
+        # print()
 
         arr = [b for a, b in pairs if b]
         arr.insert(0, pairs[0][0])
-        print(arr, end="\n\n")
+        # print(arr, end="\n\n")
     
         frontier = 2
-
         for i in range(1, len(pairs)):
             num = pairs[i][0]  # num to insert
-            print("i =", i, ", num to insert =", num)
-            print(arr)
+            # print("i =", i, ", num to insert =", num)
+            # print(arr)
 
-
+            l = 0
+            r = frontier
             insert_idx = -1
-            for j in range(frontier):
-                if self.compare(num, arr[j]) < 0:
-                    insert_idx = j
-                    break
+            while l < r:
+                m = (l + r) // 2
+                if self.compare(arr[m], num) > 0:
+                    r = m
+                    insert_idx = m
+                else:
+                    l = m + 1
+
             if insert_idx == -1:
                 insert_idx = frontier
 
-
-
-            print("insert_idx =", insert_idx)
-
+            # print("insert_idx =", insert_idx)
             arr.insert(insert_idx, num)
-            print(arr)
+            frontier += 2
+
+            # print(arr)
+            # print()
 
             assert Utils.is_sorted(arr), "arr is not sorted :("
 
-            print()
-            frontier += 2
 
         return arr
         
@@ -238,18 +241,23 @@ def sort_and_report(arr: list[int], sort_strategy: ISortStrategy):
 
 
 if __name__ == "__main__":
-    arr = Utils.random_arr(n=15, seed=None, duplicate=False)
+    arr = Utils.random_arr(n=10, seed=None, duplicate=False)
     # arr = [0, 8, 6, 2, 11, 7, 9, 13, 14, 3, 4, 12, 1, 5, 10]
     # arr = [9, 4, 1, 2, 10, 11, 13, 8, 6, 5, 7, 14, 12, 0, 3]
+    # arr = [14, 6, 3, 8, 2, 1, 13, 5, 11, 12, 7, 10, 0, 9, 4]
     Utils.print_arr(arr, end="\n\n")
 
     strategies = (
         # SelectionSortStrategy(),
         # LinearInsertionSortStrategy(),
-        # BinaryInsertionSortStrategy(),
-        # MergeSortStrategy(),
+        BinaryInsertionSortStrategy(),
+        MergeSortStrategy(),
         MergeInsertionSortStrategy(),
     )
     for strategy in strategies:
         sort_and_report(arr, strategy)
         print()
+
+    n = len(arr)
+    theoretical_bound = sum(math.ceil(math.log2(3/4 * k)) for k in range(1, n + 1))
+    print(f"Theoretical bound: {theoretical_bound}")
