@@ -23,16 +23,16 @@ class Utils:
             arr = [i for i in range(n)]
             random.shuffle(arr)
         return arr
-    
+        
+    def is_items_same(arr_1: list, arr_2: list):
+        return Counter(arr_1) == Counter(arr_2)
+
     def is_sorted(arr: list[int]):
         for i in range(len(arr) - 1):
             if arr[i] > arr[i + 1]:
                 return False
         return True
-    
-    def is_items_same(arr_1: list, arr_2: list):
-        return Counter(arr_1) == Counter(arr_2)
-    
+
     def print_arr(arr: list, end="\n"):
         if len(arr) > 10:
             print(str(arr[:5]).rstrip("]"), "...", str(arr[-5:]).lstrip("["), end="")
@@ -172,61 +172,38 @@ class MergeInsertionSortStrategy(ISortStrategy):
                 a, b = arr[i], None
             pairs.append([a, b])
         return pairs
+    
+    def _init_main_chain(self, pairs):
+        main_chain = []
+        for a, b in pairs:
+            if b != None:
+                main_chain.append(b)
+        main_chain.insert(0, pairs[0][0])
+        return main_chain
 
     def sort(self, arr: list[int]):
+        self.compare_count = 0
+
         pairs = self._make_pairs(arr)
         pairs = self._sort(pairs)
 
-        main_chain = []
-        num_to_insert = []
-        for a, b in pairs:
-            num_to_insert.append(a)
-            if b != None:
-                main_chain.append(b)
-        main_chain.insert(0, num_to_insert[0])
+        main_chain = self._init_main_chain(pairs)
 
-        # print("main_chain", main_chain)
-        # print("num_to_insert", num_to_insert)
-        # print()
+        # print(pairs)
+        # print(main_chain)
 
-        seq = (1, 3,2, 5,4, 11,10,9,8,7,6, 21,20,19,18,17,16,15,14,13,12)
-        for i in seq:
-            if i >= len(num_to_insert):
-                continue
+        for i in range(1, len(pairs)):
+            insert_num = pairs[i][0]
+            insert_idx = 2 * i
+            for j in range(2 * i):
+                if self.compare(insert_num, main_chain[j]) < 0:
+                    insert_idx = j
+                    break
+            # print("num", insert_num, "to index", insert_idx)
+            main_chain.insert(insert_idx, insert_num)
+            # print(main_chain)
 
-            num = pairs[i][0]
-
-            # print("main_chain", main_chain)
-            # print("num =", num)
-
-            l = 0
-            if pairs[i][1]:
-                start_r = main_chain.index(pairs[i][1]) - 1
-            else:
-                start_r = len(main_chain) - 1
-            r = start_r
-            # print("(l, r) =", (l, r))
-            while l < r:
-                m = (l + r) // 2
-                if self.compare(main_chain[m], num) > 0:
-                    r = m
-                else:
-                    l = m + 1
-                # print("(l, r) =", (l, r))
-
-            if l == start_r:
-                insert_idx = start_r + 1
-            else:
-                insert_idx = r
-
-            # print("insert_idx =", insert_idx)
-            main_chain.insert(insert_idx, num)
-
-            print("main_chain", main_chain)
-            # print()
-
-
-            assert Utils.is_sorted(main_chain), "main_chain just got un-sorted :("
+            assert Utils.is_sorted(main_chain), "array is broken"
 
         return main_chain
         
@@ -238,33 +215,41 @@ def sort_and_report(arr: list[int], sort_strategy: ISortStrategy):
     time_end = time.perf_counter()
     time_taken = time_end - time_start
 
+    n = len(arr)
+    theoretical_bound = sum(math.ceil(math.log2(3/4 * k)) for k in range(1, n + 1))
+
+    unchanged = Utils.is_items_same(arr, sorted_arr)
+    sorted_ = Utils.is_sorted(sorted_arr)
     rows = (
         ("Name", sort_strategy.name),
-        ("Unchanged", Utils.is_items_same(arr, sorted_arr)),
-        ("Sorted", Utils.is_sorted(sorted_arr)),
+        ("Unchanged", unchanged),
+        ("Sorted", sorted_),
         ("Compare", str(sort_strategy.compare_count) + " times"),
         ("Time", str(round(time_taken * 1000000)) + "us")
     )
     first_col_width = max(len(row[0]) for row in rows)
+
     Utils.print_arr(sorted_arr)
     for a, b in rows:
         print(f"{a.rjust(first_col_width)} : {b}")
 
+    assert unchanged, "array got changed"
+    assert sorted_, "array is not sorted"
+    # assert sort_strategy.compare_count <= theoretical_bound, f"took too many steps (> {theoretical_bound} times)"
+
 
 if __name__ == "__main__":
-    arr = Utils.random_arr(n=21, seed=None, duplicate=False)
-    # arr = Utils.random_arr(n=42, seed=42, duplicate=True)
-    
-    # arr = [0, 8, 6, 2, 11, 7, 9, 13, 14, 3, 4, 12, 1, 5, 10]
-    # arr = [9, 4, 1, 2, 10, 11, 13, 8, 6, 5, 7, 14, 12, 0, 3]
-    # arr = [14, 6, 3, 8, 2, 1, 13, 5, 11, 12, 7, 10, 0, 9, 4]
+    arrays = [
+        # [5, 0, 8, 6, 4, 1, 7, 2, 9, 3],
+        # [0, 8, 6, 2, 11, 7, 9, 13, 14, 3, 4, 12, 1, 5, 10],
+        # [9, 4, 1, 2, 10, 11, 13, 8, 6, 5, 7, 14, 12, 0, 3],
+        # [14, 6, 3, 8, 2, 1, 13, 5, 11, 12, 7, 10, 0, 9, 4],
 
-    # arr = [5, 0, 8, 6, 4, 1, 7, 2, 9, 3]
-    # arr[-1] = 100
+        # Utils.random_arr(n=42, seed=42, duplicate=True),
 
-    Utils.print_arr(arr, end="\n\n")
-    
-
+        Utils.random_arr(n=21),
+        # Utils.random_arr(n=2100),
+    ]
     strategies = (
         # SelectionSortStrategy(),
         # LinearInsertionSortStrategy(),
@@ -273,9 +258,7 @@ if __name__ == "__main__":
         MergeInsertionSortStrategy(),
     )
     for strategy in strategies:
-        sort_and_report(arr, strategy)
-        print()
-
-    n = len(arr)
-    theoretical_bound = sum(math.ceil(math.log2(3/4 * k)) for k in range(1, n + 1))
-    print(f"Theoretical bound: {theoretical_bound}")
+        for arr in arrays:
+            Utils.print_arr(arr, end="\n\n")
+            sort_and_report(arr, strategy)
+            print()
