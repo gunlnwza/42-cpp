@@ -2,210 +2,139 @@ import random
 import time
 
 
-def is_sorted(arr: list[int]):
-    for i in range(len(arr) - 1):
-        if arr[i] > arr[i + 1]:
-            return False
-    return True
-
-
-def print_arr(arr: list):
-    print("arr of length ", len(arr), ": ", sep="", end="")
-    if len(arr) > 10:
-        print(str(arr[:5]).rstrip("]"), "...", str(arr[-5:]).lstrip("["))
-    else:
-        print(arr)
-
-
-def selection_sort(arr: list[int]):
-    print("selection_sort")
-    time_start = time.perf_counter()
-
-    compare_cnt = 0
-    swap_cnt = 0
-
-    for i in range(len(arr) - 1):
-        
-        min_idx = i
-        for j in range(i + 1, len(arr)):
-            compare_cnt += 1
-            if arr[j] < arr[min_idx]:
-                min_idx = j
-        if min_idx != i:
-            arr[i], arr[min_idx] = arr[min_idx], arr[i]
-            swap_cnt += 1
-            # print(swap_cnt, arr)
-
-    time_stop = time.perf_counter()
-    time_taken = time_stop - time_start
-
-    print_arr(arr)
-    print("is_sorted:", is_sorted(arr))
-    print(f"time_taken: {time_taken * 1000:.0f} ms")
-    print("compare_cnt:", compare_cnt)
-    print("swap_cnt:", swap_cnt)
-    print()
-
-
-def linear_insertion_sort(arr: list[int]):
-    print("linear_insertion_sort")
-    time_start = time.perf_counter()
-
-    compare_cnt = 0
-    insert_cnt = 0
-
-    for i in range(1, len(arr)):
-        for j in range(i):
-            compare_cnt += 1
-            if arr[i] < arr[j]:
-                item = arr.pop(i)
-                arr.insert(j, item)
-                insert_cnt += 1
-                # print(insert_cnt, arr)
-                break
+class Utils:
+    def random_arr(N=None, seed=None, number_range=(1, 100)):
+        if seed:
+            random.seed(seed)
+        if not N:
+            N = random.randint(1, 100)
+        a, b = number_range
+        arr = [random.randint(a, b) for _ in range(N)]
+        return arr
     
-    time_stop = time.perf_counter()
-    time_taken = time_stop - time_start
+    def is_sorted(arr: list[int]):
+        for i in range(len(arr) - 1):
+            if arr[i] > arr[i + 1]:
+                return False
+        return True
     
-    print_arr(arr)
-    print("is_sorted:", is_sorted(arr))
-    print(f"time_taken: {time_taken * 1000:.0f} ms")
-    print("compare_cnt:", compare_cnt)
-    print("insert_cnt:", insert_cnt)
-    print()
+    def print_arr(arr: list, end="\n"):
+        if len(arr) > 10:
+            print(str(arr[:5]).rstrip("]"), "...", str(arr[-5:]).lstrip("["), end="")
+        else:
+            print(arr, end="")
+        print(f" ({len(arr)} items)", end=end)
 
-
-def binary_insertion_sort(arr: list[int]):
-    print("binary_insertion_sort")
-    time_start = time.perf_counter()
-
-    compare_cnt = 0
-    insert_cnt = 0
-
-    for i in range(1, len(arr)):
-        l = 0
-        r = i
-        insert_idx = -1
-        while l < r:
-            m = (l + r) // 2
-            compare_cnt += 1
-            if arr[m] > arr[i]:
-                r = m
-                insert_idx = m
-            else:
-                l = m + 1
-
-        if insert_idx > -1:
-            item = arr.pop(i)
-            arr.insert(insert_idx, item)
-            insert_cnt += 1
-            # print(insert_cnt, arr)
-
-    time_stop = time.perf_counter()
-    time_taken = time_stop - time_start
-
-    print_arr(arr)
-    print("is_sorted:", is_sorted(arr))
-    print(f"time_taken: {time_taken * 1000:.0f} ms")
-    print("compare_cnt:", compare_cnt)
-    print("insert_cnt:", insert_cnt)
-    print()
-
-
-
-compare_cnt = 0
-insert_cnt = 0
-def merge_sort(arr: list[int]):
-    def rec(arr: list[int]):
-        if len(arr) <= 1:
-            return arr
-        
-        mid = len(arr) // 2
-        left = rec(arr[:mid])
-        right = rec(arr[mid:])
-
-        return merge(left, right)
-
-    def merge(left: list[int], right: list[int]):
-        global compare_cnt, insert_cnt
-
-        result = []
-        i = j = 0
-
-        while i < len(left) and j < len(right):
-            compare_cnt += 1
-            if left[i] <= right[j]:
-                insert_cnt += 1
-                result.append(left[i])
-                i += 1
-            else:
-                insert_cnt += 1
-                result.append(right[j])
-                j += 1
-        
-        insert_cnt += len(left[i:])
-        result.extend(left[i:])
-        insert_cnt += len(right[j:])
-        result.extend(right[j:])
-        return result
-
-    print("merge_sort")
-    time_start = time.perf_counter()
-
-    arr = rec(arr)
-    print_arr(arr)
-
-    time_end = time.perf_counter()
-    time_taken = time_end - time_start
-
-    print("is_sorted:", is_sorted(arr))
-    print(f"time_taken: {time_taken * 1000:.0f} ms")
-    print("compare_cnt:", compare_cnt)
-    print("insert_cnt:", insert_cnt)
-
-class Result:
-    def __init__(self):
-        pass
-
-    def put(self):
-        pass
 
 class ISortStrategy:
+    def __init__(self, name=""):
+        self.name: str = name
+
+        self.compare_count = 0
+
+    # must return arr
+    def sort(arr: list[int]):
+        raise NotImplementedError()
+    
+    def compare(self, a, b):
+        self.compare_count += 1
+        return a - b
+
+class SelectionSortStrategy(ISortStrategy):
     def __init__(self):
-        pass
+        super().__init__("selection")
+    
+    def sort(self, arr: list[int]):
+        for i in range(len(arr) - 1):
+            min_idx = i
+            for j in range(i + 1, len(arr)):
+                if self.compare(arr[j], arr[min_idx]) < 0:
+                    min_idx = j
+            if min_idx != i:
+                arr[i], arr[min_idx] = arr[min_idx], arr[i]
+        return arr
 
-    def sort(arr: list[int], result: Result):
-        pass
-
-
-
-class Sorter:
+class LinearInsertionSortStrategy(ISortStrategy):
     def __init__(self):
-        self.time_start = None
-        self.time_end = None
-        self.result: Result = None
+        super().__init__("linear_insertion")
 
-    def sort(self, arr: list[int], func: ISortStrategy):
-        self.time_start = time.perf_counter()
-        func.sort(arr.copy(), self.result)
-        self.time_end = time.perf_counter()
-        self.result.put()
+    def sort(self, arr: list[int]):
+        for i in range(1, len(arr)):
+            for j in range(i):
+                if self.compare(arr[i], arr[j]) < 0:
+                    item = arr.pop(i)
+                    arr.insert(j, item)
+                    break
+        return arr
+
+class BinaryInsertionSortStrategy(ISortStrategy):
+    def __init__(self):
+        super().__init__("binary_insertion")
+
+    def sort(self, arr: list[int]):
+        for i in range(1, len(arr)):
+            l = 0
+            r = i
+            insert_idx = -1
+            while l < r:
+                m = (l + r) // 2
+                if self.compare(arr[m], arr[i]) > 0:
+                    r = m
+                    insert_idx = m
+                else:
+                    l = m + 1
+
+            if insert_idx > -1:
+                item = arr.pop(i)
+                arr.insert(insert_idx, item)
+        return arr
+
+class MergeSortStrategy(ISortStrategy):
+    def __init__(self):
+        super().__init__("merge")
+
+    def sort(self, arr: list[int]):
+        return arr
+    
+class MergeInsertionSortStrategy(ISortStrategy):
+    def __init__(self):
+        super().__init__("merge_insertion")
+    
+    def sort(self, arr: list[int]):
+        return arr
+
+
+def sort_and_report(arr: list[int], sort_strategy: ISortStrategy):
+    arr = arr.copy()
+    
+    time_start = time.perf_counter()
+    arr = sort_strategy.sort(arr)
+    time_end = time.perf_counter()
+    time_taken = time_end - time_start
+    
+    rows = [
+        ("Name", sort_strategy.name),
+        ("Sorted", Utils.is_sorted(arr)),
+        ("Compare", str(sort_strategy.compare_count) + " times"),
+        ("Time", str(round(time_taken * 1000000)) + "us")
+    ]
+    first_col_width = max(len(row[0]) for row in rows)
+    Utils.print_arr(arr)
+    for a, b in rows:
+        print(f"{a.rjust(first_col_width)} : {b}")
 
 
 if __name__ == "__main__":
-    # random.seed(42)
-    
-    # N = random.randint(10, 100)
-    # N = 10000
-    # arr = [i for i in range(N)]
-    # random.shuffle(arr)
-    arr = [5,2,3,4,1,7,6]
+    arr = Utils.random_arr(N=100, seed=None)
+    Utils.print_arr(arr, end="\n\n")
 
-    print_arr(arr)
-    print()
-
-    selection_sort(arr.copy())
-    linear_insertion_sort(arr.copy())
-    binary_insertion_sort(arr.copy())
-    merge_sort(arr.copy())
-    
+    strategies = (
+        SelectionSortStrategy(),
+        LinearInsertionSortStrategy(),
+        BinaryInsertionSortStrategy(),
+        MergeSortStrategy(),
+        MergeInsertionSortStrategy()
+    )
+    for strategy in strategies:
+        sort_and_report(arr, strategy)
+        print()
