@@ -156,68 +156,79 @@ class MergeInsertionSortStrategy(ISortStrategy):
 
     def _sort(self, pairs: list[int]):
         if len(pairs) == 1:
-            if pairs[0][1] != None and self.compare(pairs[0][0], pairs[0][1]) > 0:
-                pairs[0][0], pairs[0][1] = pairs[0][1], pairs[0][0]
-            # print("base case, return", pairs)
             return pairs
-        # print("_sort left", pairs[:len(pairs) // 2])
         left_pairs = self._sort(pairs[:len(pairs) // 2])
-        # print("_sort right", pairs[len(pairs) // 2:])
         right_pairs = self._sort(pairs[len(pairs) // 2:])
-        # print("merge", pairs)
         return self._merge(left_pairs, right_pairs)
 
-    def sort(self, arr: list[int]):
-        # print(arr)
-        
+    def _make_pairs(self, arr: list[int]):
         pairs = []
         for i in range(0, len(arr), 2):
             if i + 1 < len(arr):
-                pairs.append([arr[i], arr[i + 1]])
+                a, b = arr[i], arr[i + 1]
+                if self.compare(a, b) > 0:
+                    a, b = b, a
             else:
-                pairs.append([arr[i], None])
-        
-        # print()
-        # print("pairs", pairs)
+                a, b = arr[i], None
+            pairs.append([a, b])
+        return pairs
+
+    def sort(self, arr: list[int]):
+        pairs = self._make_pairs(arr)
         pairs = self._sort(pairs)
-        # print("sorted pairs", pairs)
+
+        main_chain = []
+        num_to_insert = []
+        for a, b in pairs:
+            num_to_insert.append(a)
+            if b != None:
+                main_chain.append(b)
+        main_chain.insert(0, num_to_insert[0])
+
+        # print("main_chain", main_chain)
+        # print("num_to_insert", num_to_insert)
         # print()
 
-        arr = [b for a, b in pairs if b]
-        arr.insert(0, pairs[0][0])
-        # print(arr, end="\n\n")
-    
-        frontier = 2
-        for i in range(1, len(pairs)):
-            num = pairs[i][0]  # num to insert
-            # print("i =", i, ", num to insert =", num)
-            # print(arr)
+        seq = (1, 3,2, 5,4, 11,10,9,8,7,6, 21,20,19,18,17,16,15,14,13,12)
+        for i in seq:
+            if i >= len(num_to_insert):
+                continue
+
+            num = pairs[i][0]
+
+            # print("main_chain", main_chain)
+            # print("num =", num)
 
             l = 0
-            r = frontier
-            insert_idx = -1
+            if pairs[i][1]:
+                start_r = main_chain.index(pairs[i][1]) - 1
+            else:
+                start_r = len(main_chain) - 1
+            r = start_r
+            # print("(l, r) =", (l, r))
             while l < r:
                 m = (l + r) // 2
-                if self.compare(arr[m], num) > 0:
+                if self.compare(main_chain[m], num) > 0:
                     r = m
-                    insert_idx = m
                 else:
                     l = m + 1
+                # print("(l, r) =", (l, r))
 
-            if insert_idx == -1:
-                insert_idx = frontier
+            if l == start_r:
+                insert_idx = start_r + 1
+            else:
+                insert_idx = r
 
             # print("insert_idx =", insert_idx)
-            arr.insert(insert_idx, num)
-            frontier += 2
+            main_chain.insert(insert_idx, num)
 
-            # print(arr)
+            print("main_chain", main_chain)
             # print()
 
-            assert Utils.is_sorted(arr), "arr is not sorted :("
 
+            assert Utils.is_sorted(main_chain), "main_chain just got un-sorted :("
 
-        return arr
+        return main_chain
         
 
 def sort_and_report(arr: list[int], sort_strategy: ISortStrategy):
@@ -241,17 +252,24 @@ def sort_and_report(arr: list[int], sort_strategy: ISortStrategy):
 
 
 if __name__ == "__main__":
-    arr = Utils.random_arr(n=10, seed=None, duplicate=False)
+    arr = Utils.random_arr(n=21, seed=None, duplicate=False)
+    # arr = Utils.random_arr(n=42, seed=42, duplicate=True)
+    
     # arr = [0, 8, 6, 2, 11, 7, 9, 13, 14, 3, 4, 12, 1, 5, 10]
     # arr = [9, 4, 1, 2, 10, 11, 13, 8, 6, 5, 7, 14, 12, 0, 3]
     # arr = [14, 6, 3, 8, 2, 1, 13, 5, 11, 12, 7, 10, 0, 9, 4]
+
+    # arr = [5, 0, 8, 6, 4, 1, 7, 2, 9, 3]
+    # arr[-1] = 100
+
     Utils.print_arr(arr, end="\n\n")
+    
 
     strategies = (
         # SelectionSortStrategy(),
         # LinearInsertionSortStrategy(),
-        BinaryInsertionSortStrategy(),
-        MergeSortStrategy(),
+        # BinaryInsertionSortStrategy(),
+        # MergeSortStrategy(),
         MergeInsertionSortStrategy(),
     )
     for strategy in strategies:
