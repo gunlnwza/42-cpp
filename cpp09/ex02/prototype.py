@@ -6,6 +6,9 @@ import math
 
 sys.setrecursionlimit(42)
 
+RED = "\033[31m"
+GREEN = "\033[32m"
+RESET = "\033[0m"
 
 class Utils:
     def random_arr(n=None, seed=None, number_range=None, duplicate=True):
@@ -52,6 +55,7 @@ class ISortStrategy:
         raise NotImplementedError()
     
     def compare(self, a, b):
+        # print(f"compare {a} vs {b}")
         self.compare_count += 1
         return a - b
 
@@ -138,12 +142,11 @@ class MergeInsertionSortStrategy(ISortStrategy):
         super().__init__("merge_insertion")
     
     def _merge(self, left_pairs, right_pairs):
+        
         pairs = []
         i = 0
         j = 0
         while i < len(left_pairs) and j < len(right_pairs):
-            if not right_pairs[j][1]:
-                break
             if self.compare(left_pairs[i][1], right_pairs[j][1]) < 0:
                 pairs.append(left_pairs[i])
                 i += 1
@@ -154,61 +157,138 @@ class MergeInsertionSortStrategy(ISortStrategy):
         pairs.extend(right_pairs[j:])
         return pairs
 
-    def _sort(self, pairs: list[int]):
-        if len(pairs) == 1:
+    def _merge_sort(self, pairs: list[int]):
+        if len(pairs) <= 1:
             return pairs
-        left_pairs = self._sort(pairs[:len(pairs) // 2])
-        right_pairs = self._sort(pairs[len(pairs) // 2:])
-        return self._merge(left_pairs, right_pairs)
+        left_pairs = self._merge_sort(pairs[:len(pairs) // 2])
+        right_pairs = self._merge_sort(pairs[len(pairs) // 2:])
+        arr = self._merge(left_pairs, right_pairs)
+        # print(arr, f"self.compare_count = {self.compare_count}")
+        return arr
 
     def _make_pairs(self, arr: list[int]):
         pairs = []
+        leftover = None
         for i in range(0, len(arr), 2):
             if i + 1 < len(arr):
                 a, b = arr[i], arr[i + 1]
                 if self.compare(a, b) > 0:
                     a, b = b, a
+                pairs.append([a, b])
             else:
-                a, b = arr[i], None
-            pairs.append([a, b])
-        return pairs
+                leftover = arr[i]
+        return pairs, leftover
     
-    def _init_main_chain(self, pairs):
-        main_chain = []
-        for a, b in pairs:
-            if b != None:
-                main_chain.append(b)
-        main_chain.insert(0, pairs[0][0])
-        return main_chain
+    def _insert(self, main_chain: list[int], left: int, right: int, num: int):
+        # print("main_chain", main_chain)
+        # print("left", left, "right", right)
+        # print("num", num)
+        
+        l = left
+        r = right
+        compare_cnt = 0
+        while l < r:
+            # print(main_chain[l:r])
+
+            m = (l + r) // 2
+            compare_cnt += 1
+            if self.compare(num, main_chain[m]) < 0:
+                r = m
+            else:
+                l = m + 1
+        
+        # max_compare = math.ceil(math.log2(right - left + 1))
+        # print(f"{num} took {compare_cnt} compares (max is {max_compare})")
+        main_chain.insert(r, num)
+
+        # print("main_chain", main_chain)
+        # print("-"*40)
+
+    def jacobsthal_decreasing(self):
+        a, b = 0, 1
+        while True:
+            for i in range(b, a, -1):
+                yield i
+            a, b = b, b + 2 * a
 
     def sort(self, arr: list[int]):
         self.compare_count = 0
 
-        pairs = self._make_pairs(arr)
-        pairs = self._sort(pairs)
+        cnt = []
 
-        main_chain = self._init_main_chain(pairs)
+        # print("arr", arr)
+        pairs, leftover = self._make_pairs(arr)
+        # print("pairs", pairs)
+        print(f"make_pairs self.compare_count = {self.compare_count}")
+        # print(pairs, leftover)
 
-        # print(pairs)
-        # print(main_chain)
+        cnt.append(self.compare_count)
 
-        for i in range(1, len(pairs)):
-            insert_num = pairs[i][0]
-            insert_idx = 2 * i
-            for j in range(2 * i):
-                if self.compare(insert_num, main_chain[j]) < 0:
-                    insert_idx = j
-                    break
-            # print("num", insert_num, "to index", insert_idx)
-            main_chain.insert(insert_idx, insert_num)
-            # print(main_chain)
+        pairs = self._merge_sort(pairs)
+        # print("pairs", pairs)
+        print(f"merge_sort self.compare_count = {self.compare_count}")
 
-            assert Utils.is_sorted(main_chain), "array is broken"
+        cnt.append(self.compare_count)
+
+        to_insert = []
+        main_chain = []
+        for a, b in pairs:
+            to_insert.append(a)
+            if b != None:
+                main_chain.append(b)
+        if leftover != None:
+            to_insert.append(leftover)
+
+        # print("arr", arr)
+        # print("pairs", pairs)
+        # print("to_insert", to_insert)
+        # print("main_chain", main_chain)
+        # print("-"*40)
+
+        number_inserted = 0
+        for i in self.jacobsthal_decreasing():
+            i -= 1
+            if number_inserted >= len(to_insert):
+                break
+            if i >= len(to_insert):
+                continue 
+            num = to_insert[i]
+            right = number_inserted + i
+            self._insert(main_chain, 0, right, num)
+            number_inserted += 1
+            assert Utils.is_sorted(main_chain), "binary search messed up"
+
+        print(f"binary insert self.compare_count = {self.compare_count}")
+        print("sort finish\n")
+        cnt.append(self.compare_count)
+
+        diff = [cnt[0], cnt[1] - cnt[0], cnt[2] - cnt[1]]
+        print(diff)
 
         return main_chain
         
 
+def B(n):
+    return n * math.ceil(math.log2(n)) - 2**math.ceil(math.log2(n)) + 1
+
+def info_theoretic_lower_bound(n):
+    return n * math.log2(n) - n / math.log(2) + (1/2) * math.log2(n)
+
+def F(n):
+    return sum(math.ceil(math.log2(3/4 * k)) for k in range(1, n + 1))
+
+def G(m):
+    a, b = 1, 1
+    k = 1
+    while not (a <= m <= b):
+        a, b = b, b + 2*a
+        k += 1
+    w = math.floor(2**(k+1) / 3)
+    return k * m - w
+
 def sort_and_report(arr: list[int], sort_strategy: ISortStrategy):
+    Utils.print_arr(arr, end="\n\n")
+
     sorted_arr = arr.copy()
     time_start = time.perf_counter()
     sorted_arr = sort_strategy.sort(sorted_arr)
@@ -216,7 +296,10 @@ def sort_and_report(arr: list[int], sort_strategy: ISortStrategy):
     time_taken = time_end - time_start
 
     n = len(arr)
-    theoretical_bound = sum(math.ceil(math.log2(3/4 * k)) for k in range(1, n + 1))
+    theoretical_bound = F(n)
+    # print("B(n) =", B(n))
+    # print("info_theoretic_lower_bound(n) =", info_theoretic_lower_bound(n))
+    # print("F(n) =", F(n))
 
     unchanged = Utils.is_items_same(arr, sorted_arr)
     sorted_ = Utils.is_sorted(sorted_arr)
@@ -224,41 +307,26 @@ def sort_and_report(arr: list[int], sort_strategy: ISortStrategy):
         ("Name", sort_strategy.name),
         ("Unchanged", unchanged),
         ("Sorted", sorted_),
-        ("Compare", str(sort_strategy.compare_count) + " times"),
+        ("Compare", (GREEN if sort_strategy.compare_count <= theoretical_bound else RED) + str(sort_strategy.compare_count) + f" times (max is {theoretical_bound})"),
         ("Time", str(round(time_taken * 1000000)) + "us")
     )
     first_col_width = max(len(row[0]) for row in rows)
 
     Utils.print_arr(sorted_arr)
     for a, b in rows:
-        print(f"{a.rjust(first_col_width)} : {b}")
+        print(f"{a.rjust(first_col_width)} : {b}{RESET}")
 
     assert unchanged, "array got changed"
     assert sorted_, "array is not sorted"
     # assert sort_strategy.compare_count <= theoretical_bound, f"took too many steps (> {theoretical_bound} times)"
 
+    print("-" * 40)
 
 if __name__ == "__main__":
-    arrays = [
-        # [5, 0, 8, 6, 4, 1, 7, 2, 9, 3],
-        # [0, 8, 6, 2, 11, 7, 9, 13, 14, 3, 4, 12, 1, 5, 10],
-        # [9, 4, 1, 2, 10, 11, 13, 8, 6, 5, 7, 14, 12, 0, 3],
-        # [14, 6, 3, 8, 2, 1, 13, 5, 11, 12, 7, 10, 0, 9, 4],
+    # random.seed(42)
 
-        # Utils.random_arr(n=42, seed=42, duplicate=True),
+    # sort_and_report([1], MergeInsertionSortStrategy())
 
-        Utils.random_arr(n=21),
-        # Utils.random_arr(n=2100),
-    ]
-    strategies = (
-        # SelectionSortStrategy(),
-        # LinearInsertionSortStrategy(),
-        # BinaryInsertionSortStrategy(),
-        # MergeSortStrategy(),
-        MergeInsertionSortStrategy(),
-    )
-    for strategy in strategies:
-        for arr in arrays:
-            Utils.print_arr(arr, end="\n\n")
-            sort_and_report(arr, strategy)
-            print()
+    for n in range(1, 4001, 1000):
+        arr = Utils.random_arr(n)
+        sort_and_report(arr, MergeInsertionSortStrategy())
