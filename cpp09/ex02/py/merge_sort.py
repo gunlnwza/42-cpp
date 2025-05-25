@@ -1,4 +1,7 @@
 import math
+import sys
+
+sys.setrecursionlimit(10)
 
 def ft_insert(arr: list, left, right, num):
     LIMIT = 10
@@ -53,20 +56,20 @@ def _merge(left, right):
     arr.extend(right[j:])
     return arr
 
-compare_cnt = 0
 def merge_sort(arr, depth=0):
     global compare_cnt
 
-    print("-->" * depth, "merge_sort", arr)
+    # print("-->" * depth, "merge_sort", arr)
     if len(arr) == 1:
-        print("..." * depth, "return", arr, f"compare_cnt={compare_cnt}")
+        # print("..." * depth, "return", arr, f"compare_cnt={compare_cnt}")
         return arr
     left = merge_sort(arr[:len(arr) // 2], depth + 1)
     right = merge_sort(arr[len(arr) // 2:], depth + 1)
-    print("-->" * depth, "_merge", left, right)
+    # print("-->" * depth, "_merge", left, right)
     arr = _merge(left, right)
-    print("..." * depth, "return", arr, f"compare_cnt={compare_cnt}")
+    # print("..." * depth, "return", arr, f"compare_cnt={compare_cnt}")
     return arr
+
 
 def B(n):
     return n * math.ceil(math.log2(n)) - 2**math.ceil(math.log2(n)) + 1
@@ -80,17 +83,37 @@ def G(m):
     w = math.floor(2**(k+1) / 3)
     return k * m - w
 
-# arr = [1, 3, 5, 7, 15, 20]
-# arr = [1, 3, 5]
-# arr = [21, 9, 8, 5, 18, 19, 2, 7, 17, 20]
-# print(arr)
-# arr = merge_sort(arr)
-# print(arr)
-# for n in range(1, 101):
-    # print(f"B({n}) = {B(n)}")
 
-n = 3001
-a = n // 2
-b = n - a
-print("for merge", B(a))
-print("for insert", G(b))
+def bin_merge_sort(arr):
+    if len(arr) == 1:
+        return arr
+    n = get_left_length(len(arr))
+    left = bin_merge_sort(arr[:n])
+    right = bin_merge_sort(arr[n:])
+    arr = _merge(left, right)
+    return arr
+
+def get_left_length(len_):
+    n = 1
+    while n * 2 < len_:
+        n *= 2
+    return n
+
+arr = [21, 9, 8, 5, 18, 19, 2, 7, 17, 20]
+# print(arr)
+# print("-"*40)
+
+compare_cnt = 0
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
+print("compare_cnt", compare_cnt)
+print("-"*40)
+
+compare_cnt = 0
+sorted_arr = bin_merge_sort(arr)
+print(sorted_arr)
+print("compare_cnt", compare_cnt)
+print("-"*40)
+
+# for i in range(1, 11):
+#     print(i, get_left_length(i))

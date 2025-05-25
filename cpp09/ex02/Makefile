@@ -4,8 +4,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = Sorter.hpp VectorSorter.hpp DequeSorter.hpp
-SRCS = main.cpp Sorter.cpp VectorSorter.cpp DequeSorter.cpp
+HEADERS = ISortStrategy.hpp VectorMergeInsertion.hpp DequeMergeInsertion.hpp
+SRCS = main.cpp ISortStrategy.cpp VectorMergeInsertion.cpp DequeMergeInsertion.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)
