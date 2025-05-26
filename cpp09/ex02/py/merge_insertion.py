@@ -80,6 +80,7 @@ def _merge_insertion(chunks, depth=0):
         i -= 1
         if i >= len(to_insert):
             continue
+
         l = 0
         r = number_inserted + i
         while l < r:
@@ -89,6 +90,7 @@ def _merge_insertion(chunks, depth=0):
                 r = m
             else:
                 l = m + 1
+        
         main_chain.insert(r, to_insert[i])
         number_inserted += 1
         if number_inserted >= len(to_insert):

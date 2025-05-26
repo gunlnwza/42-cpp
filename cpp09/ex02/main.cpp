@@ -178,17 +178,15 @@ int	main(int argc, char** argv)
 
     gettimeofday(&t_start, NULL);
     deque_merge_insertion.copy_numbers(inputs);
-    deque_merge_insertion.sort();
+    // deque_merge_insertion.sort();
     gettimeofday(&t_stop, NULL);
     microseconds_deque = get_microseconds(t_start, t_stop);
     deque_result = deque_merge_insertion.get_numbers();
 
     std::cout << "Before : " << inputs << std::endl;
     std::cout << "After  : " << vector_result << std::endl;
-    std::cout << "Time to process a range of " << n << " elements with "
-        << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
-    std::cout << "Time to process a range of " << n << " elements with "
-        << deque_merge_insertion.get_name() << " : " << microseconds_deque << " microseconds" << std::endl;
+    std::cout << "Time to process a range of " << n << " elements with " << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
+    std::cout << "Time to process a range of " << n << " elements with " << deque_merge_insertion.get_name() << " : " << microseconds_deque << " microseconds" << std::endl;
 
     if (PRINT_RESULTS_DETAILS)
     {
@@ -198,7 +196,7 @@ int	main(int argc, char** argv)
         std::cout << std::endl;
         print_result_details(inputs, &vector_merge_insertion);
         std::cout << std::endl;
-        print_result_details(inputs, &deque_merge_insertion);
+        // print_result_details(inputs, &deque_merge_insertion);
     }
 
     return (EXIT_SUCCESS);

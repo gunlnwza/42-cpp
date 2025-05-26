@@ -156,8 +156,6 @@ class MergeInsertionSortStrategy(ISortStrategy):
         r = right
         compare_cnt = 0
         while l < r:
-            # print(main_chain[l:r])
-
             m = (l + r) // 2
             compare_cnt += 1
             if self.compare(num, main_chain[m]) < 0:
