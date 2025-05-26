@@ -102,9 +102,9 @@ int	main(int argc, char** argv)
 
         std::cout << std::endl;
 
-        strategy = new DequeMergeInsertion();
-        sort_and_report(inputs, *strategy);
-        delete strategy;
+        // strategy = new DequeMergeInsertion();
+        // sort_and_report(inputs, *strategy);
+        // delete strategy;
 
         return (EXIT_SUCCESS);
     }
