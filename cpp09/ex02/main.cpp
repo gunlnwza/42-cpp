@@ -130,9 +130,9 @@ void print_result_details(const std::vector<int>& inputs, ISortStrategy* strateg
     std::cout << name << " : " << "unchanged = " << (unchanged ? "Yes" : "No") << std::endl;
     std::cout << name << " : " << "compare_count = " << compare_count << std::endl;
     if (sorted && unchanged && compare_count <= max_compare_count_formula(inputs.size()))
-        std::cout << GREEN << "[ " << name << " OK ]" << RESET << std::endl;
+        std::cout << GREEN << name << " : OK" << RESET << std::endl;
     else
-        std::cout << RED << "[ " << name << " KO ]" << RESET << std::endl;
+        std::cout << RED << name << " : KO" << RESET << std::endl;
 }
 
 // ./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`

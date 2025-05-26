@@ -41,11 +41,12 @@ void debug(int depth, const std::string& msg) {
     std::cout << msg << std::endl;
 }
 
-void make_pairs(std::vector<VectorChunk>& pairs, std::vector<VectorChunk>& chunks)
+void VectorMergeInsertion::_make_pairs(std::vector<VectorChunk>& pairs, std::vector<VectorChunk>& chunks)
 {
     // debug(depth, "(1) make pairs");
     for (size_t i = 0; i < chunks.size() - 1; i += 2)
     {
+        this->compare_count++;
         if (chunks[i] < chunks[i + 1])
             pairs.push_back(VectorChunk(chunks[i].get_data(), chunks[i + 1].get_data()));
         else
@@ -53,7 +54,7 @@ void make_pairs(std::vector<VectorChunk>& pairs, std::vector<VectorChunk>& chunk
     }
 }
 
-void init_to_insert_and_main_chain(std::vector<VectorChunk>& pairs, std::vector<VectorChunk>& to_insert, std::vector<VectorChunk>& main_chain)
+void VectorMergeInsertion::_init_to_insert_and_main_chain(std::vector<VectorChunk>& pairs, std::vector<VectorChunk>& to_insert, std::vector<VectorChunk>& main_chain)
 {
     VectorChunk lesser;
     VectorChunk greater;
@@ -66,7 +67,7 @@ void init_to_insert_and_main_chain(std::vector<VectorChunk>& pairs, std::vector<
     }
 }
 
-void insert_to_main_chain(std::vector<VectorChunk>& to_insert, std::vector<VectorChunk>& main_chain)
+void VectorMergeInsertion::_insert_to_main_chain(std::vector<VectorChunk>& to_insert, std::vector<VectorChunk>& main_chain)
 {
     // debug(depth, "(3.2) inserting");
     // int chunk_inserted = 0;
@@ -76,6 +77,7 @@ void insert_to_main_chain(std::vector<VectorChunk>& to_insert, std::vector<Vecto
         int insert_idx = main_chain.size();
         for (size_t j = 0; j < main_chain.size(); ++j)
         {
+            this->compare_count++;
             if (to_insert[i] < main_chain[j]) {
                 insert_idx = j;
                 break ;
@@ -102,18 +104,19 @@ void VectorMergeInsertion::_merge_insertion(std::vector<VectorChunk>& chunks, in
     }
 
     std::vector<VectorChunk> pairs;
-    make_pairs(pairs, chunks);
+    this->_make_pairs(pairs, chunks);
 
     // debug(depth, "(2) call deeper _merge_insertion");
     this->_merge_insertion(pairs, depth + 1);
 
-    std::vector<VectorChunk> to_insert, main_chain;
-    init_to_insert_and_main_chain(pairs, to_insert, main_chain);
+    std::vector<VectorChunk> to_insert;
+    std::vector<VectorChunk> main_chain;
+    this->_init_to_insert_and_main_chain(pairs, to_insert, main_chain);
     if (chunks.size() % 2 == 1) {  // TODO: make heap alloc later
         to_insert.push_back(chunks.at(chunks.size() - 1));
     }
 
-    insert_to_main_chain(to_insert, main_chain);
+    this->_insert_to_main_chain(to_insert, main_chain);
     
     chunks = main_chain;
 
