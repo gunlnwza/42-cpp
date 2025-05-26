@@ -12,7 +12,7 @@
 #define GREEN "\033[32m"
 #define RESET "\033[0m"
 
-// Containers used: std::vector, std::deque, (and std::unordered_map to check integrity of results)
+// Containers used: std::vector, std::deque
 
 static const std::vector<int> parse_inputs(int argc, char **argv)
 {
@@ -82,18 +82,18 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int> v)
 
 bool is_unchanged(const std::vector<int>& a, const std::vector<int>& b)
 {
-    std::unordered_map<int, int> a_count;
-    std::unordered_map<int, int> b_count;
+    std::vector<int> sorted_a = a;
+    std::vector<int> sorted_b = b;
 
-    for (std::vector<int>::const_iterator it = a.begin(); it != a.end(); ++it)
-        a_count[*it]++;
-    for (std::vector<int>::const_iterator it = b.begin(); it != b.end(); ++it)
-        b_count[*it]++;
-    return (a_count == b_count);
+    std::sort(sorted_a.begin(), sorted_a.end());
+    std::sort(sorted_b.begin(), sorted_b.end());
+    return (sorted_a == sorted_b);
 }
 
 bool is_sorted(const std::vector<int>& v)
 {
+    if (v.size() == 0)
+        return (true);
     for (size_t i = 0; i < v.size() - 1; ++i)
     {
         if (v[i] > v[i + 1])
@@ -121,13 +121,19 @@ void print_result_details(const std::vector<int>& inputs, ISortStrategy* strateg
     bool                sorted;
     bool                unchanged;
 
+    std::cout << "name" << std::endl;
     name = strategy->get_name();
+    std::cout << "result" << std::endl;
     result = strategy->get_numbers();
+    std::cout << "compare_count" << std::endl;
     compare_count = strategy->get_compare_count();
-    sorted = is_sorted(result);
+    std::cout << "unchanged" << std::endl;
     unchanged = is_unchanged(inputs, result);
-    std::cout << name << " : " << "sorted = " << (sorted ? "Yes" : "No") << std::endl;
+    std::cout << "sorted" << std::endl;
+    sorted = is_sorted(result);
+    
     std::cout << name << " : " << "unchanged = " << (unchanged ? "Yes" : "No") << std::endl;
+    std::cout << name << " : " << "sorted = " << (sorted ? "Yes" : "No") << std::endl;
     std::cout << name << " : " << "compare_count = " << compare_count << std::endl;
     if (sorted && unchanged && compare_count <= max_compare_count_formula(inputs.size()))
         std::cout << GREEN << name << " : OK" << RESET << std::endl;
