@@ -1,11 +1,15 @@
 NAME = PmergeMe
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98
+CFLAGS = -Wall -Wextra  -std=c++98
 RM = rm -rf
 
-HEADERS = ISortStrategy.hpp VectorMergeInsertion.hpp DequeMergeInsertion.hpp VectorChunk.hpp JacobsthalDecreasingGenerator.hpp
-SRCS = main.cpp ISortStrategy.cpp VectorMergeInsertion.cpp DequeMergeInsertion.cpp VectorChunk.cpp JacobsthalDecreasingGenerator.cpp
+HEADERS = ISortStrategy.hpp JacobsthalDecreasingGenerator.hpp \
+	vector_merge_insertion/VectorMergeInsertion.hpp vector_merge_insertion/VectorChunk.hpp \
+	deque_merge_insertion/DequeMergeInsertion.hpp
+SRCS = main.cpp ISortStrategy.cpp JacobsthalDecreasingGenerator.cpp \
+	vector_merge_insertion/VectorMergeInsertion.cpp vector_merge_insertion/VectorChunk.cpp \
+	deque_merge_insertion/DequeMergeInsertion.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)

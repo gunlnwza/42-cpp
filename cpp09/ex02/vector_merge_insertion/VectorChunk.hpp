@@ -2,13 +2,12 @@
 # define VECTOR_CHUNK_HPP
 
 # include <vector>
+# include <iostream>
 
 class VectorChunk
 {
     private:
-        int                 key;
         std::vector<int>    data;
-        size_t              size;
 
     public:
         VectorChunk();
@@ -19,13 +18,16 @@ class VectorChunk
         VectorChunk(const std::vector<int>& data);
         VectorChunk(int data);
 
-        int get_key() const;
+        int              get_key() const;
         std::vector<int> get_data() const;
-        size_t get_size() const;
+        size_t           get_size() const;
+        
         bool operator<(const VectorChunk& other) const;
         bool operator>(const VectorChunk& other) const;
 
         void divide_into(VectorChunk& lesser, VectorChunk& greater);
 };
+
+std::ostream& operator<<(std::ostream& os, const VectorChunk& c);
 
 #endif

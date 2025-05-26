@@ -35,54 +35,72 @@ std::vector<int> VectorMergeInsertion::get_numbers() const
 }
 
 
-void VectorMergeInsertion::_merge_insertion(std::vector<VectorChunk>& chunks)
-{
-    std::cout << "_merge_insertion" << std::endl;
+void debug(int depth, const std::string& msg) {
+    for (int i = 0; i < depth; ++i) {
+        std::cout << "    ";
+    }
+    std::cout << msg << std::endl;
+}
 
-    if (chunks.size() == 1) {
-        std::cout << "chunk.size() == 1, returning" << std::endl;
+// void make_pairs(std::vector<VectorChunk>)
+// {
+
+// }
+
+void VectorMergeInsertion::_merge_insertion(std::vector<VectorChunk>& chunks, int depth)
+{
+    if (depth == 40)
+        throw (std::runtime_error("too many recursion"));
+
+    debug(depth, "_merge_insertion");
+
+    for (int i = 0; i < depth; ++i)
+        std::cout << "    ";
+    for (std::vector<VectorChunk>::iterator it = chunks.begin(); it != chunks.end(); ++it)
+        std::cout << *it << " ";
+    std::cout << std::endl;
+
+    if (chunks.size() <= 1) {
         return ;
     }
 
-    std::cout << "(1) make pairs" << std::endl;
-
+    debug(depth, "(1) make pairs");
     std::vector<VectorChunk> pairs;
-    VectorChunk remainder_chunk;
     for (size_t i = 0; i < chunks.size() - 1; i += 2)
     {
-        VectorChunk pair;
         if (chunks[i] < chunks[i + 1])
-            pair = VectorChunk(chunks[i].get_data(), chunks[i + 1].get_data());
+            pairs.push_back(VectorChunk(chunks[i].get_data(), chunks[i + 1].get_data()));
         else
-            pair = VectorChunk(chunks[i + 1].get_data(), chunks[i].get_data());
-        pairs.push_back(pair);
-    }
-    if (chunks.size() % 2 == 1) {
-        remainder_chunk = chunks.back();
+            pairs.push_back(VectorChunk(chunks[i + 1].get_data(), chunks[i].get_data()));
     }
 
-    std::cout << "(2) lower _merge_insertion" << std::endl;
-    this->_merge_insertion(pairs);
+    debug(depth, "(2) call deeper _merge_insertion");
+    this->_merge_insertion(pairs, depth + 1);
 
-    std::cout << "(3.1) init to_insert and main_chain" << std::endl;
+    for (int i = 0; i < depth; ++i)
+        std::cout << "    ";
+    std::cout << "pairs = ";
+    for (std::vector<VectorChunk>::iterator it = pairs.begin(); it != pairs.end(); ++it)
+        std::cout << *it << " ";
+    std::cout << std::endl;
+
+    debug(depth, "(3.1) init to_insert and main_chain");
     std::vector<VectorChunk> main_chain;
     std::vector<VectorChunk> to_insert;
     VectorChunk lesser, greater;
-    for (std::vector<VectorChunk>::iterator it; it != pairs.end(); ++it) {
-        std::cout << "divide_into" << std::endl;
+    for (std::vector<VectorChunk>::iterator it = pairs.begin(); it != pairs.end(); ++it)
+    {
         it->divide_into(lesser, greater);
-        std::cout << "to_insert.push_back(lesser);" << std::endl;
         to_insert.push_back(lesser);
-        std::cout << "main_chain.push_back(greater);" << std::endl;
         main_chain.push_back(greater);
     }
 
-    if (chunks.size() % 2 == 1) { 
-        std::cout << "(3.1.5) insert remainder_chunk" << std::endl;
-        to_insert.push_back(remainder_chunk);
+    if (chunks.size() % 2 == 1) {
+        to_insert.push_back(chunks.at(chunks.size() - 1));
     }
 
-    std::cout << "(3.2) inserting" << std::endl;
+    debug(depth, "(3.2) inserting");
+
     // int chunk_inserted = 0;
     for (size_t i = 0; i < to_insert.size(); ++i)
     {
@@ -111,7 +129,7 @@ void VectorMergeInsertion::sort()
         chunks.push_back(VectorChunk(*it));
     }
 
-    this->_merge_insertion(chunks);
+    this->_merge_insertion(chunks, 1);
 
     std::cout << "push to vector" << std::endl;
 

@@ -3,7 +3,7 @@
 
 # include <deque>
 
-# include "ISortStrategy.hpp"
+# include "../ISortStrategy.hpp"
 
 class DequeMergeInsertion : public ISortStrategy
 {

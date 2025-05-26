@@ -1,7 +1,7 @@
 #ifndef VECTOR_MERGE_INSERTION_HPP
 # define VECTOR_MERGE_INSERTION_HPP
 
-# include "ISortStrategy.hpp"
+# include "../ISortStrategy.hpp"
 # include "VectorChunk.hpp"
 
 class VectorMergeInsertion : public ISortStrategy
@@ -9,7 +9,7 @@ class VectorMergeInsertion : public ISortStrategy
     private:
         std::vector<int> vector;
 
-        void _merge_insertion(std::vector<VectorChunk>& chunks);
+        void _merge_insertion(std::vector<VectorChunk>& chunks, int depth);
 
     public:
         VectorMergeInsertion();
