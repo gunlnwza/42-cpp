@@ -3,7 +3,7 @@ import math
 
 from utils import Utils
 
-sys.setrecursionlimit(10)
+sys.setrecursionlimit(42)
 
 def debug(depth, *msg):
     print("    " * depth, end="")
@@ -131,7 +131,7 @@ def _merge_insertion(chunks, depth=0):
     
     if len(chunks) == 1:
         return chunks
-    debug(depth, "(0)", f"chunks={chunks}")
+    # debug(depth, "(0)", f"chunks={chunks}")
 
     pairs: list[Chunk] = []
     remainder_chunk = None
@@ -160,13 +160,16 @@ def _merge_insertion(chunks, depth=0):
     if remainder_chunk:
         to_insert.append(remainder_chunk)
 
-    debug(depth, "(3.1)", f"to_insert={to_insert}", f"main_chain={main_chain}")
+    # debug(depth, "(3.1)", f"to_insert={to_insert}", f"main_chain={main_chain}")
 
     number_inserted = 0
 
-    for i in range(len(to_insert)):
+    for i in jacobsthal_decreasing():
+        i -= 1
+        if i >= len(to_insert):
+            continue
         l = 0
-        r = len(main_chain)
+        r = number_inserted + i
         while l < r:
             m = (l + r) // 2
             compare_count += 1
@@ -175,12 +178,19 @@ def _merge_insertion(chunks, depth=0):
             else:
                 l = m + 1
         main_chain.insert(r, to_insert[i])
-        
-    debug(depth, "(3.2)", f"main_chain={main_chain}")
+        number_inserted += 1
+        if number_inserted >= len(to_insert):
+            break
+
+    # debug(depth, "(3.2)", f"main_chain={main_chain}")
 
     return main_chain
 
 def sort(arr):
+    global compare_count
+
+    compare_count = 0
+
     chunks: list[Chunk] = []
     for i in range(len(arr)):
         chunk = Chunk([arr[i]])
@@ -196,17 +206,19 @@ def sort(arr):
 def max_compare_count_formula(n):
     return sum(math.ceil(math.log2(3/4 * k)) for k in range(1, n + 1))
 
-n = 21
-arr = Utils.random_arr(n=n)
-print(" ".join(map(str, arr)))
-sorted_arr = sort(arr)
-print(" ".join(map(str, sorted_arr)))
-print("Compare count:", compare_count)
+n = 1000
+for i in range(100):
+    arr = Utils.random_arr(n=n)
+    print(" ".join(map(str, arr)))
+    sorted_arr = sort(arr)
+    print(" ".join(map(str, sorted_arr)))
+    print("Compare count:", compare_count)
 
-max_compare_count = max_compare_count_formula(n)
-GREEN = "\033[32m"
-RESET = "\033[0m"
-print("Max compare:  ", f"{GREEN}{max_compare_count}{RESET}" if compare_count <= max_compare_count else max_compare_count)
+    max_compare_count = max_compare_count_formula(n)
+    GREEN = "\033[32m"
+    RESET = "\033[0m"
+    print("Max compare:  ", f"{GREEN}{max_compare_count}{RESET}" if compare_count <= max_compare_count else max_compare_count)
 
-assert Utils.is_items_same(arr, sorted_arr)
-assert Utils.is_sorted(sorted_arr)
+    assert Utils.is_items_same(arr, sorted_arr)
+    assert Utils.is_sorted(sorted_arr)
+    assert compare_count <= max_compare_count
