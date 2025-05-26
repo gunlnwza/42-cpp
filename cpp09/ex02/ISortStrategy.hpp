@@ -6,8 +6,6 @@
 
 class ISortStrategy
 {
-    private:
-
     protected:
         std::string name;
         int         compare_count;

@@ -1,11 +1,18 @@
-#include <vector>
-#include <iostream>
-# include <sys/time.h>
+#include <sys/time.h>
+#include <cmath>
+#include <unordered_map>
+#include <iomanip>
 
 #include "vector_merge_insertion/VectorMergeInsertion.hpp"
 #include "deque_merge_insertion/DequeMergeInsertion.hpp"
 
-// Containers used: std::vector, std::deque
+#define PRINT_RESULTS_DETAILS true
+
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define RESET "\033[0m"
+
+// Containers used: std::vector, std::deque, (and std::unordered_map to check integrity of results)
 
 static const std::vector<int> parse_inputs(int argc, char **argv)
 {
@@ -30,26 +37,7 @@ static const std::vector<int> parse_inputs(int argc, char **argv)
     return (inputs);
 }
 
-static void print_vector(const std::vector<int>& vector)
-{
-    const int max_head_length = 5;
-
-    if (vector.size() > max_head_length * 2)
-    {
-        for (size_t i = 0; i < max_head_length; ++i)
-            std::cout << vector[i] << " ";
-        std::cout << "... ";
-        for (size_t i = vector.size() - 5; i < vector.size(); ++i)
-            std::cout << vector[i] << " ";
-    }
-    else
-    {
-        for (std::vector<int>::const_iterator it = vector.begin(); it != vector.end(); ++it)
-            std::cout << *it << " ";
-    }
-}
-
-static long get_microseconds(struct timeval t_start, struct timeval t_stop)
+long get_microseconds(struct timeval t_start, struct timeval t_stop)
 {
     int seconds;
     int microseconds;
@@ -64,95 +52,148 @@ static long get_microseconds(struct timeval t_start, struct timeval t_stop)
     return (1000000 * seconds + microseconds);
 }
 
-static void sort_and_report(const std::vector<int>& inputs, ISortStrategy& strategy)
+std::ostream& operator<<(std::ostream& os, const std::vector<int> v)
 {
-    const size_t    N = inputs.size();
-    struct timeval  t_start;
-    struct timeval  t_stop;
-    long            microseconds;
+    const int max_head_length = 5;
 
-    gettimeofday(&t_start, NULL);
-    strategy.copy_numbers(inputs);
-    strategy.sort();
-    gettimeofday(&t_stop, NULL);
-    microseconds = get_microseconds(t_start, t_stop);
-
-    std::cout << "Before : " ;
-    print_vector(inputs);
-    std::cout << std::endl;
-
-    std::cout << "After  : " ;
-    print_vector(strategy.get_numbers());
-    std::cout << std::endl;
-
-    std::cout << "Time to process a range of " << N << " elements with "
-              << strategy.get_name() << " : " << microseconds << " microseconds" << std::endl;
+    if (v.size() > max_head_length * 2)
+    {
+        for (size_t i = 0; i < max_head_length; ++i)
+        {
+            if (i > 0)
+                std::cout << " ";
+            std::cout << v[i];
+        }
+        std::cout << "[...]";
+        for (size_t i = v.size() - 5; i < v.size(); ++i)
+            std::cout << " " << v[i];
+    }
+    else
+    {
+        for (std::vector<int>::const_iterator it = v.begin(); it != v.end(); ++it)
+        {
+            if (it != v.begin())
+                std::cout << " ";
+            std::cout << *it;
+        }
+    }
+    return (os);
 }
 
-/*
-int main()
+bool is_unchanged(const std::vector<int>& a, const std::vector<int>& b)
 {
-    // VectorChunk chunk;
-    std::cout << "TESTING" << std::endl;
+    std::unordered_map<int, int> a_count;
+    std::unordered_map<int, int> b_count;
 
-    std::vector<int> a;
-    a.push_back(5);
-    a.push_back(4);
-    a.push_back(3);
-    a.push_back(2);
-    a.push_back(1);
-
-    std::vector<int> b;
-    b.push_back(10);
-    b.push_back(9);
-    b.push_back(8);
-    b.push_back(7);
-    b.push_back(6);
-
-    VectorChunk chunk(a, b);
-
-    VectorChunk lesser, greater;
-
-    chunk.divide_into(lesser, greater);
-
-    print_vector(lesser.get_data());
-    print_vector(greater.get_data());
-
-    // std::cout << "key: " << chunk.get_key() << std::endl;
-    // std::cout << "data: " << chunk.get_data() << std::endl;
-    // std::cout << "size: " << chunk.get_size() << std::endl;
+    for (std::vector<int>::const_iterator it = a.begin(); it != a.end(); ++it)
+        a_count[*it]++;
+    for (std::vector<int>::const_iterator it = b.begin(); it != b.end(); ++it)
+        b_count[*it]++;
+    return (a_count == b_count);
 }
-*/
+
+bool is_sorted(const std::vector<int>& v)
+{
+    for (size_t i = 0; i < v.size() - 1; ++i)
+    {
+        if (v[i] > v[i + 1])
+            return (false);
+    }
+    return (true);
+}
+
+// https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91
+int max_compare_count_formula(int n)
+{
+    int sum = 0;
+    for (int k = 1; k <= n; ++k) {
+        double value = (3.0 / 4.0) * k;
+        sum += static_cast<int>(ceil(log2(value)));
+    }
+    return sum;
+}
+
+void print_result_details(const std::vector<int>& inputs, ISortStrategy* strategy)
+{
+    std::string         name;
+    std::vector<int>    result;
+    int                 compare_count;
+    bool                sorted;
+    bool                unchanged;
+
+    name = strategy->get_name();
+    result = strategy->get_numbers();
+    compare_count = strategy->get_compare_count();
+    sorted = is_sorted(result);
+    unchanged = is_unchanged(inputs, result);
+    std::cout << name << " : " << "sorted = " << (sorted ? "Yes" : "No") << std::endl;
+    std::cout << name << " : " << "unchanged = " << (unchanged ? "Yes" : "No") << std::endl;
+    std::cout << name << " : " << "compare_count = " << compare_count << std::endl;
+    if (sorted && unchanged && compare_count <= max_compare_count_formula(inputs.size()))
+        std::cout << GREEN << "[ " << name << " OK ]" << RESET << std::endl;
+    else
+        std::cout << RED << "[ " << name << " KO ]" << RESET << std::endl;
+}
 
 // ./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`
 int	main(int argc, char** argv)
 {
+    std::vector<int>    inputs;
+    size_t              n;
+
     try
     {
-        const std::vector<int> inputs = parse_inputs(argc, argv);
-
-        // int arr[8] = {6, 1, 5, 3, 8, 7, 4, 2};
-        // const std::vector<int> inputs(arr, arr + sizeof(arr) / sizeof(arr[0]));
-
-        ISortStrategy*         strategy;
-
-        std::cout << "size: " << inputs.size() << std::endl;
-
-        strategy = new VectorMergeInsertion();
-        sort_and_report(inputs, *strategy);
-        delete strategy;
-
-        std::cout << std::endl;
-
-        // strategy = new DequeMergeInsertion();
-        // sort_and_report(inputs, *strategy);
-        // delete strategy;
-
-        return (EXIT_SUCCESS);
+        inputs = parse_inputs(argc, argv);
+        n = inputs.size();
     }
     catch (const std::runtime_error& e)
     {
         std::cerr << "Error: " << e.what() << std::endl;
         return (EXIT_FAILURE);
     }
+
+    VectorMergeInsertion vector_merge_insertion;
+    DequeMergeInsertion  deque_merge_insertion;
+
+    struct timeval  t_start;
+    struct timeval  t_stop;
+    long            microseconds_vector;
+    long            microseconds_deque;
+
+    std::vector<int> vector_result;
+    std::vector<int> deque_result;
+
+    gettimeofday(&t_start, NULL);
+    vector_merge_insertion.copy_numbers(inputs);
+    vector_merge_insertion.sort();
+    gettimeofday(&t_stop, NULL);
+    microseconds_vector = get_microseconds(t_start, t_stop);
+    vector_result = vector_merge_insertion.get_numbers();
+
+    gettimeofday(&t_start, NULL);
+    deque_merge_insertion.copy_numbers(inputs);
+    deque_merge_insertion.sort();
+    gettimeofday(&t_stop, NULL);
+    microseconds_deque = get_microseconds(t_start, t_stop);
+    deque_result = deque_merge_insertion.get_numbers();
+
+    std::cout << "Before : " << inputs << std::endl;
+    std::cout << "After  : " << vector_result << std::endl;
+    std::cout << "Time to process a range of " << n << " elements with "
+        << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
+    std::cout << "Time to process a range of " << n << " elements with "
+        << deque_merge_insertion.get_name() << " : " << microseconds_deque << " microseconds" << std::endl;
+
+    if (PRINT_RESULTS_DETAILS)
+    {
+        std::cout << std::endl;
+        std::cout << "[ Results Details ]" << std::endl;
+        std::cout << "max compare_count allowed = " << max_compare_count_formula(n) << std::endl;
+        std::cout << std::endl;
+        print_result_details(inputs, &vector_merge_insertion);
+        std::cout << std::endl;
+        print_result_details(inputs, &deque_merge_insertion);
+    }
+
+    return (EXIT_SUCCESS);
 }
