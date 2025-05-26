@@ -117,6 +117,13 @@ class Chunk:
         n = self.size // 2
         return Chunk(self.data[:n]), Chunk(self.data[n:])
 
+# implement with static var in c++ later, "Generator class"
+def jacobsthal_decreasing():
+    a, b = 0, 1
+    while True:
+        for i in range(b, a, -1):
+            yield i
+        a, b = b, b + 2 * a
 
 compare_count = 0
 def _merge_insertion(chunks, depth=0):
@@ -155,14 +162,19 @@ def _merge_insertion(chunks, depth=0):
 
     debug(depth, "(3.1)", f"to_insert={to_insert}", f"main_chain={main_chain}")
 
+    number_inserted = 0
+
     for i in range(len(to_insert)):
-        insert_idx = len(main_chain)
-        for j in range(len(main_chain)):
+        l = 0
+        r = len(main_chain)
+        while l < r:
+            m = (l + r) // 2
             compare_count += 1
-            if to_insert[i] < main_chain[j]:
-                insert_idx = j
-                break
-        main_chain.insert(insert_idx, to_insert[i])
+            if to_insert[i] < main_chain[m]:
+                r = m
+            else:
+                l = m + 1
+        main_chain.insert(r, to_insert[i])
         
     debug(depth, "(3.2)", f"main_chain={main_chain}")
 
