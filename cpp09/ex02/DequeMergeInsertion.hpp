@@ -1,5 +1,5 @@
-#ifndef DEQUE_MERGE_INSERTION
-# define DEQUE_MERGE_INSERTION
+#ifndef DEQUE_MERGE_INSERTION_HPP
+# define DEQUE_MERGE_INSERTION_HPP
 
 # include <deque>
 

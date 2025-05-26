@@ -4,8 +4,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = ISortStrategy.hpp VectorMergeInsertion.hpp DequeMergeInsertion.hpp
-SRCS = main.cpp ISortStrategy.cpp VectorMergeInsertion.cpp DequeMergeInsertion.cpp
+HEADERS = ISortStrategy.hpp VectorMergeInsertion.hpp DequeMergeInsertion.hpp VectorChunk.hpp JacobsthalDecreasingGenerator.hpp
+SRCS = main.cpp ISortStrategy.cpp VectorMergeInsertion.cpp DequeMergeInsertion.cpp VectorChunk.cpp JacobsthalDecreasingGenerator.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)

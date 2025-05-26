@@ -1,5 +1,5 @@
-#ifndef I_SORT_STRATEGY
-# define I_SORT_STRATEGY
+#ifndef I_SORT_STRATEGY_HPP
+# define I_SORT_STRATEGY_HPP
 
 # include <string>
 # include <vector>
