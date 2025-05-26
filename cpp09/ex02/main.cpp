@@ -1,16 +1,14 @@
 #include <sys/time.h>
 #include <cmath>
-#include <unordered_map>
-#include <iomanip>
 
 #include "vector_merge_insertion/VectorMergeInsertion.hpp"
 #include "deque_merge_insertion/DequeMergeInsertion.hpp"
 
-#define PRINT_RESULTS_DETAILS true
-
 #define RED "\033[31m"
 #define GREEN "\033[32m"
 #define RESET "\033[0m"
+
+#define PRINT_RESULTS_DETAILS false
 
 // Containers used: std::vector, std::deque
 
@@ -59,11 +57,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int> v)
     if (v.size() > max_head_length * 2)
     {
         for (size_t i = 0; i < max_head_length; ++i)
-        {
-            if (i > 0)
-                std::cout << " ";
-            std::cout << v[i];
-        }
+            std::cout << v[i] << " ";
         std::cout << "[...]";
         for (size_t i = v.size() - 5; i < v.size(); ++i)
             std::cout << " " << v[i];
@@ -121,15 +115,10 @@ void print_result_details(const std::vector<int>& inputs, ISortStrategy* strateg
     bool                sorted;
     bool                unchanged;
 
-    std::cout << "name" << std::endl;
     name = strategy->get_name();
-    std::cout << "result" << std::endl;
     result = strategy->get_numbers();
-    std::cout << "compare_count" << std::endl;
     compare_count = strategy->get_compare_count();
-    std::cout << "unchanged" << std::endl;
     unchanged = is_unchanged(inputs, result);
-    std::cout << "sorted" << std::endl;
     sorted = is_sorted(result);
     
     std::cout << name << " : " << "unchanged = " << (unchanged ? "Yes" : "No") << std::endl;
@@ -144,6 +133,11 @@ void print_result_details(const std::vector<int>& inputs, ISortStrategy* strateg
 // ./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`
 int	main(int argc, char** argv)
 {
+    // JacobsthalDecreasingGenerator gen;
+    // for (int i = 0; i < 200; ++i)
+    //     std::cout << gen.next() << " ";
+    // std::cout << std::endl;
+
     std::vector<int>    inputs;
     size_t              n;
 
@@ -176,16 +170,17 @@ int	main(int argc, char** argv)
     microseconds_vector = get_microseconds(t_start, t_stop);
     vector_result = vector_merge_insertion.get_numbers();
 
+    std::cout << "Before : " << inputs << std::endl;
+    std::cout << "After  : " << vector_result << std::endl;
+    std::cout << "Time to process a range of " << n << " elements with " << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
+
     gettimeofday(&t_start, NULL);
     deque_merge_insertion.copy_numbers(inputs);
-    // deque_merge_insertion.sort();
+    deque_merge_insertion.sort();
     gettimeofday(&t_stop, NULL);
     microseconds_deque = get_microseconds(t_start, t_stop);
     deque_result = deque_merge_insertion.get_numbers();
 
-    std::cout << "Before : " << inputs << std::endl;
-    std::cout << "After  : " << vector_result << std::endl;
-    std::cout << "Time to process a range of " << n << " elements with " << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
     std::cout << "Time to process a range of " << n << " elements with " << deque_merge_insertion.get_name() << " : " << microseconds_deque << " microseconds" << std::endl;
 
     if (PRINT_RESULTS_DETAILS)
@@ -196,7 +191,7 @@ int	main(int argc, char** argv)
         std::cout << std::endl;
         print_result_details(inputs, &vector_merge_insertion);
         std::cout << std::endl;
-        // print_result_details(inputs, &deque_merge_insertion);
+        print_result_details(inputs, &deque_merge_insertion);
     }
 
     return (EXIT_SUCCESS);

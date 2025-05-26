@@ -10,6 +10,8 @@ class JacobsthalDecreasingGenerator
 
     public:
         JacobsthalDecreasingGenerator();
+        JacobsthalDecreasingGenerator(const JacobsthalDecreasingGenerator& other);
+        JacobsthalDecreasingGenerator& operator=(const JacobsthalDecreasingGenerator& other);
         ~JacobsthalDecreasingGenerator();
 
         int next();

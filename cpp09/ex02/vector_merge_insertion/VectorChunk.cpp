@@ -62,14 +62,12 @@ void VectorChunk::divide_into(VectorChunk& lesser, VectorChunk& greater)
 std::ostream& operator<<(std::ostream& os, const VectorChunk& c)
 {
     std::vector<int> data = c.get_data();
-    std::cout << "[ ";
-    for (std::vector<int>::iterator it = data.begin(); it != data.end(); ++it)
-    {
-        if (it != data.begin())
-            std::cout << " " << *it;
-        else
-            std::cout << *it;
+    std::cout << "[";
+    for (size_t i = 0; i < data.size(); ++i) {
+        std::cout << data[i];
+        if (i < data.size() - 1)
+            std::cout << ", ";
     }
-    std::cout << " ]";
+    std::cout << "]";
     return (os);
 }
