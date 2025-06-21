@@ -27,7 +27,7 @@ class VectorChunk
         bool operator<(const VectorChunk& other) const;
         bool operator>(const VectorChunk& other) const;
 
-        void divide_self(VectorChunk* lesser, VectorChunk* greater);
+        void copy_both_halves(VectorChunk* lesser, VectorChunk* greater) const;
 };
 
 std::ostream& operator<<(std::ostream& os, const VectorChunk& c);

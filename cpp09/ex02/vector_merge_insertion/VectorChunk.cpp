@@ -60,7 +60,7 @@ bool VectorChunk::operator>(const VectorChunk& other) const {
 
 
 // assume lesser, and greater are uninitialized
-void VectorChunk::divide_self(VectorChunk* lesser, VectorChunk* greater)
+void VectorChunk::copy_both_halves(VectorChunk* lesser, VectorChunk* greater) const
 {
     size_t lesser_size = this->data.size() / 2;
     for (size_t i = 0; i < this->data.size(); ++i)
