@@ -20,7 +20,11 @@ JacobsthalDecreasingGenerator& JacobsthalDecreasingGenerator::operator=(const Ja
 
 JacobsthalDecreasingGenerator::~JacobsthalDecreasingGenerator() {}
 
-
+// get the current Jacobsthal number, and prepare the next number
+// J(1) = 1
+// J(2) = 1
+// J(n) = J(n - 1) + 2 * J(n - 2)
+// "(1) (3) 2 (5) 4 (11) 10 9 8 7 6 (21) 20 19 ..."
 int JacobsthalDecreasingGenerator::next()
 {
     int result;

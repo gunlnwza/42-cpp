@@ -1,18 +1,13 @@
-#include <cmath>
 #include <climits>
-#include <algorithm>
 #include <cerrno>
 
 #include "vector_merge_insertion/VectorMergeInsertion.hpp"
 #include "deque_merge_insertion/DequeMergeInsertion.hpp"
-
-#define RED "\033[31m"
-#define GREEN "\033[32m"
-#define RESET "\033[0m"
-
-#define PRINT_RESULTS_DETAILS true
+#include "Timer.hpp"
 
 // Containers used: std::vector, std::deque
+
+void print_result_details(const std::vector<int>& inputs, ISortStrategy* strategy);
 
 static const std::vector<int> parse_inputs(int argc, char **argv)
 {
@@ -37,22 +32,7 @@ static const std::vector<int> parse_inputs(int argc, char **argv)
     return (inputs);
 }
 
-long get_microseconds(struct timeval t_start, struct timeval t_stop)
-{
-    int seconds;
-    int microseconds;
-
-    seconds = t_stop.tv_sec - t_start.tv_sec;
-    microseconds = t_stop.tv_usec - t_start.tv_usec;
-    if (microseconds < 0)
-    {
-        seconds--;
-        microseconds += 1000000;
-    }
-    return (1000000 * seconds + microseconds);
-}
-
-std::ostream& operator<<(std::ostream& os, const std::vector<int> v)
+static std::ostream& operator<<(std::ostream& os, const std::vector<int> v)
 {
     const int max_head_length = 5;
 
@@ -76,62 +56,6 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int> v)
     return (os);
 }
 
-bool is_unchanged(const std::vector<int>& a, const std::vector<int>& b)
-{
-    std::vector<int> sorted_a = a;
-    std::vector<int> sorted_b = b;
-
-    std::sort(sorted_a.begin(), sorted_a.end());
-    std::sort(sorted_b.begin(), sorted_b.end());
-    return (sorted_a == sorted_b);
-}
-
-bool is_sorted(const std::vector<int>& v)
-{
-    if (v.size() == 0)
-        return (true);
-    for (size_t i = 0; i < v.size() - 1; ++i)
-    {
-        if (v[i] > v[i + 1])
-            return (false);
-    }
-    return (true);
-}
-
-// https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91
-int max_compare_count_formula(int n)
-{
-    int sum = 0;
-    for (int k = 1; k <= n; ++k) {
-        double value = (3.0 / 4.0) * k;
-        sum += static_cast<int>(ceil(log2(value)));
-    }
-    return sum;
-}
-
-void print_result_details(const std::vector<int>& inputs, ISortStrategy* strategy)
-{
-    std::string         name;
-    std::vector<int>    result;
-    int                 compare_count;
-    bool                sorted;
-    bool                unchanged;
-
-    name = strategy->get_name();
-    result = strategy->get_numbers();
-    compare_count = strategy->get_compare_count();
-    unchanged = is_unchanged(inputs, result);
-    sorted = is_sorted(result);
-    
-    std::cout << name << " : " << "unchanged = " << (unchanged ? "Yes" : "No") << std::endl;
-    std::cout << name << " : " << "sorted = " << (sorted ? "Yes" : "No") << std::endl;
-    std::cout << name << " : " << "compare_count = " << compare_count << std::endl;
-    if (unchanged && sorted && compare_count <= max_compare_count_formula(inputs.size()))
-        std::cout << GREEN << name << " : OK" << RESET << std::endl;
-    else
-        std::cout << RED << name << " : KO" << RESET << std::endl;
-}
-
 /*
 ./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`
 */
@@ -147,46 +71,29 @@ int	main(int argc, char** argv)
         return (EXIT_FAILURE);
     }
 
-    VectorMergeInsertion vector_merge_insertion;
-    DequeMergeInsertion  deque_merge_insertion;
-
+    Timer                timer;
+    VectorMergeInsertion vector_mi;
+    DequeMergeInsertion  deque_mi;
     
-    long            microseconds_vector;
-    // long            microseconds_deque;
-
-    std::vector<int> vector_result;
-    // std::vector<int> deque_result;
-
-    gettimeofday(&t_start, NULL);
-    vector_merge_insertion.copy_numbers(inputs);
-    vector_merge_insertion.sort();
-    gettimeofday(&t_stop, NULL);
-    microseconds_vector = get_microseconds(t_start, t_stop);
-    vector_result = vector_merge_insertion.get_numbers();
-
+    timer.start();
+    vector_mi.copy_numbers(inputs);
+    vector_mi.sort();
+    timer.stop();
     std::cout << "Before : " << inputs << std::endl;
-    std::cout << "After  : " << vector_result << std::endl;
-    std::cout << "Time to process a range of " << inputs.size() << " elements with " << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
+    std::cout << "After  : " << vector_mi.get_numbers() << std::endl;
+    std::cout << "Time to process a range of " << inputs.size() << " elements with " << vector_mi.get_name() << " : "
+        << timer.get_microseconds() << " microseconds" << std::endl;
+    print_result_details(inputs, &vector_mi);
 
-    // gettimeofday(&t_start, NULL);
-    // deque_merge_insertion.copy_numbers(inputs);
-    // deque_merge_insertion.sort();
-    // gettimeofday(&t_stop, NULL);
-    // microseconds_deque = get_microseconds(t_start, t_stop);
-    // deque_result = deque_merge_insertion.get_numbers();
+    timer.reset();
 
-    // std::cout << "Time to process a range of " << n << " elements with " << deque_merge_insertion.get_name() << " : " << microseconds_deque << " microseconds" << std::endl;
-
-    if (PRINT_RESULTS_DETAILS)
-    {
-        std::cout << std::endl;
-        std::cout << "[ Results Details ]" << std::endl;
-        std::cout << "max compare_count allowed = " << max_compare_count_formula(inputs.size()) << std::endl;
-        std::cout << std::endl;
-        print_result_details(inputs, &vector_merge_insertion);
-        std::cout << std::endl;
-        // print_result_details(inputs, &deque_merge_insertion);
-    }
+    timer.start();
+    deque_mi.copy_numbers(inputs);
+    deque_mi.sort();
+    timer.stop();
+    std::cout << "Time to process a range of " << inputs.size() << " elements with " << deque_mi.get_name() << " : "
+        << timer.get_microseconds() << " microseconds" << std::endl;
+    print_result_details(inputs, &deque_mi);
 
     return (EXIT_SUCCESS);
 }
