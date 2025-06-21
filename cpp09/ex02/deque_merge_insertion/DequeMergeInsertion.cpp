@@ -7,6 +7,7 @@ DequeMergeInsertion::DequeMergeInsertion()
 }
 
 DequeMergeInsertion::DequeMergeInsertion(const DequeMergeInsertion& other)
+: ISortStrategy(other)
 {
     *this = other;
 }

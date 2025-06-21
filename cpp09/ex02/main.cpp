@@ -1,5 +1,8 @@
 #include <sys/time.h>
 #include <cmath>
+#include <climits>
+#include <algorithm>
+#include <cerrno>
 
 #include "vector_merge_insertion/VectorMergeInsertion.hpp"
 #include "deque_merge_insertion/DequeMergeInsertion.hpp"
@@ -8,7 +11,7 @@
 #define GREEN "\033[32m"
 #define RESET "\033[0m"
 
-#define PRINT_RESULTS_DETAILS false
+#define PRINT_RESULTS_DETAILS true
 
 // Containers used: std::vector, std::deque
 
@@ -24,11 +27,11 @@ static const std::vector<int> parse_inputs(int argc, char **argv)
         errno = 0;
         value = std::strtol(argv[i], &ptr, 10);
         if (*ptr != '\0')
-            throw (std::runtime_error("not a number"));
+            throw (std::runtime_error("input have not-a-number"));
         if (errno == ERANGE || value < INT_MIN || value > INT_MAX)
-            throw (std::runtime_error("not an int"));
+            throw (std::runtime_error("input have out-of-range number"));
         if (value <= 0)
-            throw (std::runtime_error("not a positive int"));
+            throw (std::runtime_error("input have non-positive number"));
         num = static_cast<int>(value);
         inputs.push_back(num);
     }
@@ -124,20 +127,17 @@ void print_result_details(const std::vector<int>& inputs, ISortStrategy* strateg
     std::cout << name << " : " << "unchanged = " << (unchanged ? "Yes" : "No") << std::endl;
     std::cout << name << " : " << "sorted = " << (sorted ? "Yes" : "No") << std::endl;
     std::cout << name << " : " << "compare_count = " << compare_count << std::endl;
-    if (sorted && unchanged && compare_count <= max_compare_count_formula(inputs.size()))
+    if (unchanged && sorted && compare_count <= max_compare_count_formula(inputs.size()))
         std::cout << GREEN << name << " : OK" << RESET << std::endl;
     else
         std::cout << RED << name << " : KO" << RESET << std::endl;
 }
 
-// ./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`
+/*
+./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`
+*/
 int	main(int argc, char** argv)
 {
-    // JacobsthalDecreasingGenerator gen;
-    // for (int i = 0; i < 200; ++i)
-    //     std::cout << gen.next() << " ";
-    // std::cout << std::endl;
-
     std::vector<int>    inputs;
     size_t              n;
 
@@ -158,10 +158,10 @@ int	main(int argc, char** argv)
     struct timeval  t_start;
     struct timeval  t_stop;
     long            microseconds_vector;
-    long            microseconds_deque;
+    // long            microseconds_deque;
 
     std::vector<int> vector_result;
-    std::vector<int> deque_result;
+    // std::vector<int> deque_result;
 
     gettimeofday(&t_start, NULL);
     vector_merge_insertion.copy_numbers(inputs);
@@ -174,14 +174,14 @@ int	main(int argc, char** argv)
     std::cout << "After  : " << vector_result << std::endl;
     std::cout << "Time to process a range of " << n << " elements with " << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
 
-    gettimeofday(&t_start, NULL);
-    deque_merge_insertion.copy_numbers(inputs);
-    deque_merge_insertion.sort();
-    gettimeofday(&t_stop, NULL);
-    microseconds_deque = get_microseconds(t_start, t_stop);
-    deque_result = deque_merge_insertion.get_numbers();
+    // gettimeofday(&t_start, NULL);
+    // deque_merge_insertion.copy_numbers(inputs);
+    // deque_merge_insertion.sort();
+    // gettimeofday(&t_stop, NULL);
+    // microseconds_deque = get_microseconds(t_start, t_stop);
+    // deque_result = deque_merge_insertion.get_numbers();
 
-    std::cout << "Time to process a range of " << n << " elements with " << deque_merge_insertion.get_name() << " : " << microseconds_deque << " microseconds" << std::endl;
+    // std::cout << "Time to process a range of " << n << " elements with " << deque_merge_insertion.get_name() << " : " << microseconds_deque << " microseconds" << std::endl;
 
     if (PRINT_RESULTS_DETAILS)
     {
@@ -191,7 +191,7 @@ int	main(int argc, char** argv)
         std::cout << std::endl;
         print_result_details(inputs, &vector_merge_insertion);
         std::cout << std::endl;
-        print_result_details(inputs, &deque_merge_insertion);
+        // print_result_details(inputs, &deque_merge_insertion);
     }
 
     return (EXIT_SUCCESS);
