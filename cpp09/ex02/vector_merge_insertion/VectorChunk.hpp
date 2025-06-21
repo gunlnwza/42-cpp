@@ -7,10 +7,12 @@
 class VectorChunk
 {
     private:
-        std::vector<int>    data;
+        std::vector<int> data;
 
     public:
         VectorChunk();
+        VectorChunk(const VectorChunk& other);
+        VectorChunk& operator=(const VectorChunk& other);
         ~VectorChunk();
         // TODO: implement OCF
 
@@ -18,14 +20,14 @@ class VectorChunk
         VectorChunk(const std::vector<int>& data);
         VectorChunk(int data);
 
-        int              get_key() const;
-        std::vector<int> get_data() const;
-        size_t           get_size() const;
+        int get_key() const;
+        const std::vector<int>& get_data() const;
+        size_t get_size() const;
         
         bool operator<(const VectorChunk& other) const;
         bool operator>(const VectorChunk& other) const;
 
-        void divide_into(VectorChunk& lesser, VectorChunk& greater);
+        void divide_self(VectorChunk* lesser, VectorChunk* greater);
 };
 
 std::ostream& operator<<(std::ostream& os, const VectorChunk& c);

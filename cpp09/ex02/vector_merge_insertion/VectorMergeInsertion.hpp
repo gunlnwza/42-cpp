@@ -10,11 +10,11 @@ class VectorMergeInsertion : public ISortStrategy
     private:
         std::vector<int> vector;
 
-        void _make_pairs(std::vector<VectorChunk>& pairs, std::vector<VectorChunk>& chunks);
-        void _divide_pairs(std::vector<VectorChunk>& pairs, std::vector<VectorChunk>& chunks, std::vector<VectorChunk>& to_insert, std::vector<VectorChunk>& main_chain);
-        void _insert_to_main_chain(std::vector<VectorChunk>& to_insert, std::vector<VectorChunk>& main_chain);
+        void _make_pairs(std::vector<VectorChunk*>& chunks, std::vector<VectorChunk*>& pairs, VectorChunk** chunk);
+        void _divide_pairs(std::vector<VectorChunk*>& pairs, VectorChunk* chunk, std::vector<VectorChunk*>& to_insert, std::vector<VectorChunk*>& main_chain);
+        void _insert_to_main_chain(std::vector<VectorChunk*>& to_insert, std::vector<VectorChunk*>& main_chain);
 
-        void _merge_insertion(std::vector<VectorChunk>& chunks, int depth);
+        void _merge_insertion(std::vector<VectorChunk*>& chunks, int depth);
 
     public:
         VectorMergeInsertion();
