@@ -4,10 +4,10 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -rf
 
-HEADERS = ISortStrategy.hpp JacobsthalDecreasingGenerator.hpp \
+HEADERS = ISortStrategy.hpp JacobsthalDecreasingGenerator.hpp Timer.hpp \
 	vector_merge_insertion/VectorMergeInsertion.hpp vector_merge_insertion/VectorChunk.hpp \
 	deque_merge_insertion/DequeMergeInsertion.hpp
-SRCS = main.cpp ISortStrategy.cpp JacobsthalDecreasingGenerator.cpp \
+SRCS = main.cpp ISortStrategy.cpp JacobsthalDecreasingGenerator.cpp Timer.cpp \
 	vector_merge_insertion/VectorMergeInsertion.cpp vector_merge_insertion/VectorChunk.cpp \
 	deque_merge_insertion/DequeMergeInsertion.cpp
 OBJS = $(SRCS:%.cpp=%.o)

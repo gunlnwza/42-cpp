@@ -1,4 +1,3 @@
-#include <sys/time.h>
 #include <cmath>
 #include <climits>
 #include <algorithm>
@@ -138,16 +137,12 @@ void print_result_details(const std::vector<int>& inputs, ISortStrategy* strateg
 */
 int	main(int argc, char** argv)
 {
-    std::vector<int>    inputs;
-    size_t              n;
+    std::vector<int> inputs;
 
-    try
-    {
+    try {
         inputs = parse_inputs(argc, argv);
-        n = inputs.size();
     }
-    catch (const std::runtime_error& e)
-    {
+    catch (const std::runtime_error& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return (EXIT_FAILURE);
     }
@@ -155,8 +150,7 @@ int	main(int argc, char** argv)
     VectorMergeInsertion vector_merge_insertion;
     DequeMergeInsertion  deque_merge_insertion;
 
-    struct timeval  t_start;
-    struct timeval  t_stop;
+    
     long            microseconds_vector;
     // long            microseconds_deque;
 
@@ -172,7 +166,7 @@ int	main(int argc, char** argv)
 
     std::cout << "Before : " << inputs << std::endl;
     std::cout << "After  : " << vector_result << std::endl;
-    std::cout << "Time to process a range of " << n << " elements with " << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
+    std::cout << "Time to process a range of " << inputs.size() << " elements with " << vector_merge_insertion.get_name() << " : " << microseconds_vector << " microseconds" << std::endl;
 
     // gettimeofday(&t_start, NULL);
     // deque_merge_insertion.copy_numbers(inputs);
@@ -187,7 +181,7 @@ int	main(int argc, char** argv)
     {
         std::cout << std::endl;
         std::cout << "[ Results Details ]" << std::endl;
-        std::cout << "max compare_count allowed = " << max_compare_count_formula(n) << std::endl;
+        std::cout << "max compare_count allowed = " << max_compare_count_formula(inputs.size()) << std::endl;
         std::cout << std::endl;
         print_result_details(inputs, &vector_merge_insertion);
         std::cout << std::endl;
