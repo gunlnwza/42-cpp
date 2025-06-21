@@ -1,68 +1,67 @@
-#include "VectorChunk.hpp"
-
 #include <iostream>
+#include "DequeChunk.hpp"
 
-VectorChunk::VectorChunk() {}
+DequeChunk::DequeChunk() {}
 
-VectorChunk::VectorChunk(const VectorChunk& other)
+DequeChunk::DequeChunk(const DequeChunk& other)
 : data(other.data)
 {}
 
-VectorChunk& VectorChunk::operator=(const VectorChunk& other)
+DequeChunk& DequeChunk::operator=(const DequeChunk& other)
 {
     this->data = other.data;
     return (*this);
 }
 
-VectorChunk::~VectorChunk() {}
+DequeChunk::~DequeChunk() {}
 
 
-VectorChunk::VectorChunk(const std::vector<int>& left_data, const std::vector<int>& right_data)
+DequeChunk::DequeChunk(const std::deque<int>& left_data, const std::deque<int>& right_data)
 {
     this->data = left_data;
     this->data.insert(this->data.end(), right_data.begin(), right_data.end());
 }
 
-VectorChunk::VectorChunk(const std::vector<int>& data)
+DequeChunk::DequeChunk(const std::deque<int>& data)
 {
     this->data = data;
 }
 
-VectorChunk::VectorChunk(int data) {
+DequeChunk::DequeChunk(int data) {
     this->data.push_back(data);
 }
 
 
-int VectorChunk::get_key() const
+int DequeChunk::get_key() const
 {
     if (this->data.size() == 0)
         throw (std::runtime_error("chunk is empty"));
     return (this->data.back());
 }
 
-const std::vector<int>& VectorChunk::get_data() const
+const std::deque<int>& DequeChunk::get_data() const
 {
     return (this->data);
 }
 
-size_t VectorChunk::get_size() const
+size_t DequeChunk::get_size() const
 {
     return (this->data.size());
 }
 
-bool VectorChunk::operator<(const VectorChunk& other) const
+bool DequeChunk::operator<(const DequeChunk& other) const
 {
     return (this->get_key() < other.get_key());
 }
 
-bool VectorChunk::operator>(const VectorChunk& other) const
+bool DequeChunk::operator>(const DequeChunk& other) const
 {
     return (this->get_key() > other.get_key());
 }
 
 
 // assume 'lesser', and 'greater' are uninitialized
-void VectorChunk::copy_both_halves(VectorChunk* lesser, VectorChunk* greater) const
+void DequeChunk::copy_both_halves(DequeChunk* lesser, DequeChunk* greater) const
 {
     size_t lesser_size = this->data.size() / 2;
     for (size_t i = 0; i < this->data.size(); ++i)
@@ -75,9 +74,9 @@ void VectorChunk::copy_both_halves(VectorChunk* lesser, VectorChunk* greater) co
 }
 
 // usage: std::cout << "chunk: " << chunk << std::endl;
-std::ostream& operator<<(std::ostream& os, const VectorChunk& c)
+std::ostream& operator<<(std::ostream& os, const DequeChunk& c)
 {
-    const std::vector<int> data = c.get_data();
+    std::deque<int> data = c.get_data();
     std::cout << "[";
     for (size_t i = 0; i < data.size(); ++i) {
         std::cout << data[i];

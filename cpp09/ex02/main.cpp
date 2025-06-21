@@ -1,5 +1,6 @@
 #include <climits>
 #include <cerrno>
+#include <cstdlib>
 
 #include "vector_merge_insertion/VectorMergeInsertion.hpp"
 #include "deque_merge_insertion/DequeMergeInsertion.hpp"
