@@ -37,24 +37,24 @@ std::vector<int> VectorMergeInsertion::get_numbers() const
 }
 
 
-// for debugging
-static void indent(int depth)
-{
-    for (int i = 0; i < depth; ++i)
-        std::cout << "    ";
-}
+// // for debugging
+// static void indent(int depth)
+// {
+//     for (int i = 0; i < depth; ++i)
+//         std::cout << "    ";
+// }
 
-// usage: std::cout << "chunks: " << chunks << std::endl;
-static std::ostream& operator<<(std::ostream& os, const std::vector<VectorChunk*>& chunks)
-{
-    for (std::vector<VectorChunk*>::const_iterator it = chunks.begin(); it != chunks.end(); ++it)
-    {
-        if (it != chunks.begin())
-            os << " ";
-        os << **it;
-    }
-    return (os);
-}
+// // usage: std::cout << "chunks: " << chunks << std::endl;
+// static std::ostream& operator<<(std::ostream& os, const std::vector<VectorChunk*>& chunks)
+// {
+//     for (std::vector<VectorChunk*>::const_iterator it = chunks.begin(); it != chunks.end(); ++it)
+//     {
+//         if (it != chunks.begin())
+//             os << " ";
+//         os << **it;
+//     }
+//     return (os);
+// }
 
 
 // combine two chunks into one big chunk, with lesser-valued chunk on the left
@@ -81,7 +81,7 @@ void VectorMergeInsertion::_make_pairs(std::vector<VectorChunk*>& chunks, std::v
     if (chunks.size() % 2 == 0)
         *chunk = NULL;
     else
-        *chunk = (chunks[chunks.size() - 1]);
+        *chunk = new VectorChunk(chunks[chunks.size() - 1]->get_data());
     
 }
 
@@ -97,8 +97,10 @@ void VectorMergeInsertion::_divide_pairs(std::vector<VectorChunk*>& pairs, Vecto
         greater = new VectorChunk();
         (*it)->copy_both_halves(lesser, greater);
         delete *it;
+
         to_insert.push_back(lesser);
         main_chain.push_back(greater);
+
     }
     if (chunk)
         to_insert.push_back(chunk);
@@ -150,18 +152,15 @@ void VectorMergeInsertion::_merge_insertion(std::vector<VectorChunk*>& chunks, i
     // indent(depth); std::cout << "chunks    = " << chunks << std::endl;
 
     this->_make_pairs(chunks, pairs, &chunk);
-    // indent(depth); std::cout << "pairs     = " << pairs << " ; ";
+    // indent(depth); std::cout << "pairs     = " << pairs << std::endl;
 
     this->_merge_insertion(pairs, depth + 1);
     // indent(depth); std::cout << "pairs     = " << pairs << std::endl;
 
-    this->_divide_pairs(pairs, chunk, to_insert, main_chain);
-    // for (std::vector<VectorChunk*>::iterator it = pairs.begin(); it != pairs.end(); ++it)
-        // delete *it;
+    this->_divide_pairs(pairs, chunk, to_insert, main_chain);    
     // indent(depth); std::cout << "to_insert = " << to_insert << " ; "; std::cout << "main_chain = " << main_chain << std::endl;
 
     this->_insert_to_main_chain(to_insert, main_chain);
-
     for (std::vector<VectorChunk*>::iterator it = chunks.begin(); it != chunks.end(); ++it)
         delete *it;
     chunks = main_chain;
@@ -172,7 +171,8 @@ void VectorMergeInsertion::sort()
 {
     std::vector<VectorChunk*> chunks;
 
-    this->compare_count = 0;    
+    this->compare_count = 0;
+
     for (std::vector<int>::iterator it = this->vector.begin(); it != this->vector.end(); ++it)
         chunks.push_back(new VectorChunk(*it));
 
