@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <sstream>
 
 #include "ISortStrategy.hpp"
 
@@ -41,6 +42,14 @@ int max_compare_count_formula(int n)
     return sum;
 }
 
+std::string ft_itoa(int n)
+{
+    std::stringstream ss;
+
+    ss << n;
+    return (ss.str());
+}
+
 void print_result_details(const std::vector<int>& inputs, ISortStrategy* strategy)
 {
     const int               max_compare_count = max_compare_count_formula(inputs.size());
@@ -50,12 +59,22 @@ void print_result_details(const std::vector<int>& inputs, ISortStrategy* strateg
     const bool              unchanged = is_unchanged(inputs, result);
     const bool              sorted = is_sorted(result);
 
+    std::string reason;
+    if (compare_count <= max_compare_count)
+        reason = "<= " + ft_itoa(max_compare_count) + " comparisons";
+    else
+        reason = "> " + ft_itoa(max_compare_count) + " comparisons";
+    if (!sorted)
+        reason = "numbers are not sorted";
+    if (!unchanged)
+        reason = "numbers are not the same";
+
     std::cout << "[ Results Details ]" << std::endl;
     std::cout << name << " : " << "unchanged   = " << (unchanged ? "Yes" : "No") << std::endl;
     std::cout << name << " : " << "sorted      = " << (sorted ? "Yes" : "No") << std::endl;
     std::cout << name << " : " << "comparisons = " << compare_count << std::endl;
     if (unchanged && sorted && compare_count <= max_compare_count)
-        std::cout << GREEN << name << " : OK (<= " << max_compare_count << " comparisons)" << RESET << std::endl;
+        std::cout << GREEN << name << " : OK (" << reason << ")" << RESET << std::endl;
     else
-        std::cout << RED << name << " : KO (> " << max_compare_count << " comparisons)" << RESET << std::endl;
+        std::cout << RED << name << " : KO (" << reason << ")" << RESET << std::endl;
 }

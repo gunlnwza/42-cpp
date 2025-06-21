@@ -3,6 +3,7 @@
 
 #include <sys/time.h>
 #include <cstring>
+#include <stdexcept>
 
 class Timer
 {

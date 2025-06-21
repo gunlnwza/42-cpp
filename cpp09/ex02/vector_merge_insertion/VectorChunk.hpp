@@ -14,16 +14,15 @@ class VectorChunk
         VectorChunk(const VectorChunk& other);
         VectorChunk& operator=(const VectorChunk& other);
         ~VectorChunk();
-        // TODO: implement OCF
 
         VectorChunk(const std::vector<int>& left_data, const std::vector<int>& right_data);
         VectorChunk(const std::vector<int>& data);
         VectorChunk(int data);
 
-        int get_key() const;
+        int                     get_key() const;
         const std::vector<int>& get_data() const;
-        size_t get_size() const;
-        
+        size_t                  get_size() const;
+
         bool operator<(const VectorChunk& other) const;
         bool operator>(const VectorChunk& other) const;
 

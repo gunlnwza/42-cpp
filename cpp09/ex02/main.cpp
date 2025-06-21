@@ -86,7 +86,6 @@ int	main(int argc, char** argv)
     print_result_details(inputs, &vector_mi);
 
     timer.reset();
-
     timer.start();
     deque_mi.copy_numbers(inputs);
     deque_mi.sort();

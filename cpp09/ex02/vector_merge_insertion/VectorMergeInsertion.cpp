@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#define DEBUG false
-
 
 VectorMergeInsertion::VectorMergeInsertion()
 {
@@ -35,26 +33,6 @@ std::vector<int> VectorMergeInsertion::get_numbers() const
 {
     return (this->vector);
 }
-
-
-// // for debugging
-// static void indent(int depth)
-// {
-//     for (int i = 0; i < depth; ++i)
-//         std::cout << "    ";
-// }
-
-// // usage: std::cout << "chunks: " << chunks << std::endl;
-// static std::ostream& operator<<(std::ostream& os, const std::vector<VectorChunk*>& chunks)
-// {
-//     for (std::vector<VectorChunk*>::const_iterator it = chunks.begin(); it != chunks.end(); ++it)
-//     {
-//         if (it != chunks.begin())
-//             os << " ";
-//         os << **it;
-//     }
-//     return (os);
-// }
 
 
 // combine two chunks into one big chunk, with lesser-valued chunk on the left
@@ -100,7 +78,6 @@ void VectorMergeInsertion::_divide_pairs(std::vector<VectorChunk*>& pairs, Vecto
 
         to_insert.push_back(lesser);
         main_chain.push_back(greater);
-
     }
     if (chunk)
         to_insert.push_back(chunk);
@@ -138,7 +115,27 @@ void VectorMergeInsertion::_insert_to_main_chain(std::vector<VectorChunk*>& to_i
     }
 }
 
+// // for debugging
+// static void indent(int depth)
+// {
+//     for (int i = 0; i < depth; ++i)
+//         std::cout << "    ";
+// }
+
+// // usage: std::cout << "chunks: " << chunks << std::endl;
+// static std::ostream& operator<<(std::ostream& os, const std::vector<VectorChunk*>& chunks)
+// {
+//     for (std::vector<VectorChunk*>::const_iterator it = chunks.begin(); it != chunks.end(); ++it)
+//     {
+//         if (it != chunks.begin())
+//             os << " ";
+//         os << **it;
+//     }
+//     return (os);
+// }
+
 // sort the chunks, recursively
+// (uncomment to see it in action!)
 void VectorMergeInsertion::_merge_insertion(std::vector<VectorChunk*>& chunks, int depth)
 {
     if (chunks.size() <= 1)

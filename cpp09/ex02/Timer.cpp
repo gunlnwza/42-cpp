@@ -32,6 +32,9 @@ void Timer::stop()
 
 long Timer::get_microseconds()
 {
+    if (this->t_stop.tv_sec == 0 || this->t_start.tv_sec == 0)
+        throw (std::runtime_error("time_start or time_stop not set"));
+
     int seconds;
     int microseconds;
 

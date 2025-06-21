@@ -33,33 +33,35 @@ VectorChunk::VectorChunk(int data) {
 }
 
 
-int VectorChunk::get_key() const {
-    // std::cout << "getting key" << std::endl;
+int VectorChunk::get_key() const
+{
     if (this->data.size() == 0)
         throw (std::runtime_error("chunk is empty"));
     return (this->data.back());
 }
 
-const std::vector<int>& VectorChunk::get_data() const {
-    // std::cout << "getting data" << std::endl;
+const std::vector<int>& VectorChunk::get_data() const
+{
     return (this->data);
 }
 
-size_t VectorChunk::get_size() const {
-    // std::cout << "getting size" << std::endl;
+size_t VectorChunk::get_size() const
+{
     return (this->data.size());
 }
 
-bool VectorChunk::operator<(const VectorChunk& other) const {
+bool VectorChunk::operator<(const VectorChunk& other) const
+{
     return (this->get_key() < other.get_key());
 }
 
-bool VectorChunk::operator>(const VectorChunk& other) const {
+bool VectorChunk::operator>(const VectorChunk& other) const
+{
     return (this->get_key() > other.get_key());
 }
 
 
-// assume lesser, and greater are uninitialized
+// assume 'lesser', and 'greater' are uninitialized
 void VectorChunk::copy_both_halves(VectorChunk* lesser, VectorChunk* greater) const
 {
     size_t lesser_size = this->data.size() / 2;
