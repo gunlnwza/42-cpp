@@ -11,9 +11,8 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 
-	BitcoinExchange	calculator("database/data_small.csv");
-	// BitcoinExchange	calculator("database/data.csv");
-
+	std::string database_file_name = "database/data_head.csv";
+	BitcoinExchange	calculator(database_file_name);
 	calculator.evaluate_query(argv[1]);
 
 	return (EXIT_SUCCESS);

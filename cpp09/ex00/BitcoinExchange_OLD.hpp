@@ -1,5 +1,5 @@
-#ifndef BITCOIN_EXCHANGE_HPP
-# define BITCOIN_EXCHANGE_HPP
+#ifndef BITCOIN_EXCHANGE_OLD_HPP
+# define BITCOIN_EXCHANGE_OLD_HPP
 
 # include <string>
 # include <iostream>
