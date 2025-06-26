@@ -13,10 +13,8 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 
-	const std::string database_file_name = "database/data_head.csv";
-	
 	try {
-		BitcoinExchange	calculator(database_file_name);
+		BitcoinExchange	calculator("database/data.csv");
 		calculator.evaluate_query(argv[1]);
 	}
 	catch (const std::runtime_error& e) {

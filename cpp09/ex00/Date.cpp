@@ -79,14 +79,14 @@ void Date::parse_date(const std::string& date_str)
     std::string y, m, d;
 
     if (!have_three_tokens(date_str, "-"))
-        throw (std::runtime_error("invalid date format '" + date_str + "'"));
+        throw (std::runtime_error("invalid date format \"" + date_str + "\""));
     split_three(date_str, delim, y, m, d);
 
     this->year = parse_int(y);
     this->month = parse_int(m);
     this->day = parse_int(d);
     if (!is_valid_date(this->year, this->month, this->day))
-        throw (std::runtime_error("not a valid date '" + date_str + "'"));
+        throw (std::runtime_error("not a valid date \"" + date_str + "\""));
 }
 
 
