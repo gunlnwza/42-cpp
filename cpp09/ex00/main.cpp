@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include "BitcoinExchange.hpp"
 
 // Containers used: std::map, std::pair

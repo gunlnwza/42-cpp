@@ -2,6 +2,8 @@
 # define BITCOIN_EXCHANGE_HPP
 
 # include <map>
+# include <fstream>
+# include <cfloat>
 
 # include "Date.hpp"
 

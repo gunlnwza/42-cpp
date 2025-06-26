@@ -1,5 +1,3 @@
-#include <fstream>
-
 #include "BitcoinExchange.hpp"
 
 
@@ -21,26 +19,62 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& other)
 BitcoinExchange::~BitcoinExchange() {}
 
 
+static bool have_two_tokens(const std::string& row)
+{
+    size_t idx;
+
+    idx = row.find(',');
+    if (idx == std::string::npos)
+        return (false);
+    idx = row.find(',', idx);
+    return (idx == std::string::npos);
+}
+
+static void split_two(const std::string& row, std::string& left, std::string& right)
+{
+    size_t idx = row.find(',');
+    left = row.substr(0, idx);
+    right = row.substr(idx + 1);
+}
+
+double parse_double(const std::string& d)
+{
+    char   **ptr;
+    double val;
+
+    errno = 0;
+    val = std::strtod(d.c_str(), ptr);
+    if (*ptr != '\0')
+        throw (std::runtime_error("not a double string '" + d + "'"));
+    if (errno == ERANGE || val < -DBL_MAX || val > DBL_MAX)
+        throw (std::runtime_error("double string out-of-range '" + d + "'"));
+    return (val);
+}
+
 // load database_file into its map container
 void BitcoinExchange::read_database(const std::string& database_file_name)
 {
-    std::ifstream file(database_file_name);
+    std::ifstream file(database_file_name.c_str());
     if (!file)
         throw (std::runtime_error("Cannot open '" + database_file_name + "'"));
     
-    std::string s;
+    std::string row, left, right;
 
-    std::getline(file, s); // TODO: parse better, validate header
+    std::getline(file, row);
+    if (!have_two_tokens(row))
+        throw ("wrong database header '" + row + "'");
+    split_two(row, left, right);
+    if (left != "data" || right != "exchange_rate")
+        throw ("wrong database header '" + row + "'");
 
-    while (std::getline(file, s))
+    while (std::getline(file, row))
     {
-        size_t idx = s.find(',');  // TODO: validate idx exist
-        std::string s_date = s.substr(0, idx);
-        std::string s_price = s.substr(idx + 1);
+        if (!have_two_tokens(row))
+            throw ("wrong database row '" + row + "'");
+        split_two(row, left, right);
 
-        Date date(s_date);  // TODO: parse better, refactor Date
-        double price = std::strtod(s_price.c_str(), NULL);  // TODO: parse better, validate number
-
+        Date date(left);  // TODO: parse better, refactor Date
+        double price = parse_double(right);
         this->date_to_price[date] = price;
     }
 }
@@ -54,7 +88,7 @@ BitcoinExchange::BitcoinExchange(const std::string& database_file_name)
 // compute each query's money, log error message on wrong query
 void BitcoinExchange::evaluate_query(const std::string& query_file_name) const
 {
-    std::ifstream file(query_file_name);
+    std::ifstream file(query_file_name.c_str());
     if (!file)
         throw (std::runtime_error("Cannot open '" + query_file_name + "'"));
 
