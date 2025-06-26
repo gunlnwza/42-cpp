@@ -12,6 +12,8 @@ class BitcoinExchange
     private:
         std::map<Date, double> date_to_price;
 
+        double get_price(const Date& date) const;
+
     public:
         BitcoinExchange();
         BitcoinExchange(const BitcoinExchange& other);

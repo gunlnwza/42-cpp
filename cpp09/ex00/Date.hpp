@@ -4,6 +4,7 @@
 # include <string>
 # include <iostream>
 # include <iomanip>
+# include <cstdlib>
 
 class Date
 {
@@ -11,16 +12,16 @@ class Date
         int year;
         int month;
         int day;
-
-        void parse_date(const std::string& date_str);
         
-    public:
+        public:
         Date();
         Date(const Date& other);
         Date& operator=(const Date& other);
         ~Date();
-
+        
+        void parse_date(const std::string& date_str);
         Date(const std::string& date_str);
+        
         Date(int year, int month, int day);
 
         bool operator<(const Date& other) const;
