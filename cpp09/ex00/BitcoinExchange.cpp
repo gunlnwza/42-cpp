@@ -62,7 +62,7 @@ void BitcoinExchange::read_database(const std::string& database_file_name)
     while (std::getline(file, row))
     {
         if (!have_two_tokens(row, delim))
-            throw ("wrong database row \"" + row + "\"");
+            throw (std::runtime_error("wrong database row \"" + row + "\""));
         split_two(row, delim, left, right);
 
         try {
