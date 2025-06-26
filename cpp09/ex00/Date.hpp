@@ -20,10 +20,10 @@ class Date
         Date& operator=(const Date& other);
         ~Date();
         
-        void parse_date(const std::string& date_str);
-        Date(const std::string& date_str);
-        
         Date(int year, int month, int day);
+        Date(const std::string& date_str);
+
+        void parse_date(const std::string& date_str);
 
         bool operator<(const Date& other) const;
         bool operator<=(const Date& other) const;

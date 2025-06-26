@@ -86,7 +86,7 @@ void Date::parse_date(const std::string& date_str)
     this->month = parse_int(m);
     this->day = parse_int(d);
     if (!is_valid_date(this->year, this->month, this->day))
-        throw (std::runtime_error("not a valid date '" + this->get_string() + "'"));
+        throw (std::runtime_error("not a valid date '" + date_str + "'"));
 }
 
 

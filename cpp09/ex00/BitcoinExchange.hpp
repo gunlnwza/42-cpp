@@ -19,8 +19,9 @@ class BitcoinExchange
         BitcoinExchange& operator=(const BitcoinExchange& other);
         ~BitcoinExchange();
 
-        void read_database(const std::string& database_file_name);
         BitcoinExchange(const std::string& database_file_name);
+        
+        void read_database(const std::string& database_file_name);
 
         void evaluate_query(const std::string& query_file_name) const;
 };

@@ -18,6 +18,8 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& other)
 
 BitcoinExchange::~BitcoinExchange() {}
 
+BitcoinExchange::BitcoinExchange(const std::string& database_file_name) { this->read_database(database_file_name); }
+
 
 static bool have_two_tokens(const std::string& row, const std::string& delim)
 {
@@ -52,10 +54,10 @@ void BitcoinExchange::read_database(const std::string& database_file_name)
 
     std::getline(file, row);
     if (!have_two_tokens(row, delim))
-        throw ("wrong database header '" + row + "'");
+        throw (std::runtime_error("wrong database header '" + row + "'"));
     split_two(row, delim, left, right);
     if (left != "date" || right != "exchange_rate")
-        throw ("wrong database header '" + row + "'");
+        throw (std::runtime_error("wrong database header '" + row + "'"));
 
     while (std::getline(file, row))
     {
@@ -63,13 +65,16 @@ void BitcoinExchange::read_database(const std::string& database_file_name)
             throw ("wrong database row '" + row + "'");
         split_two(row, delim, left, right);
 
-        date.parse_date(left);
-        price = parse_double(right);
+        try {
+            date.parse_date(left);
+            price = parse_double(right);
+        }
+        catch (const std::runtime_error& e) {
+            throw (std::runtime_error("wrong database row '" + row + "'"));
+        }
         this->date_to_price[date] = price;
     }
 }
-
-BitcoinExchange::BitcoinExchange(const std::string& database_file_name) { this->read_database(database_file_name); }
 
 
 double BitcoinExchange::get_price(const Date& date) const
@@ -92,32 +97,49 @@ void BitcoinExchange::evaluate_query(const std::string& query_file_name) const
         throw (std::runtime_error("Cannot open '" + query_file_name + "'"));
 
     const std::string delim = " | ";
+    const double max_amount = 1000;
+
     std::string row, left, right;
     Date date;
     double amount, price, money;
 
     std::getline(file, row);
     if (!have_two_tokens(row, delim))
-        throw ("wrong query header '" + row + "'");
+        throw (std::runtime_error("wrong query header '" + row + "'"));
     split_two(row, delim, left, right);
     if (left != "date" || right != "value")
-        throw ("wrong query header '" + row + "'");
+        throw (std::runtime_error("wrong query header '" + row + "'"));
 
     while (std::getline(file, row))
     {
-        if (!have_two_tokens(row, delim))  // TODO: add more ERROR HANDLING
+        if (!have_two_tokens(row, delim))
         {
-            std::cout << "Error: bad input => " << row << std::endl;
+            std::cout << "Error: bad input => " << row << " (invalid format)" << std::endl;
             continue ;
         }
         split_two(row, delim, left, right);
 
         try {
-            date.parse_date(left);  // TODO: parse better, refactor Date
+            date.parse_date(left);
+        }
+        catch (const std::runtime_error& e) {
+            std::cout << "Error: bad input => " << row << " (invalid date)" << std::endl;
+            continue ;
+        }
+
+        try {
             amount = parse_double(right);
         }
         catch (const std::runtime_error& e) {
-            std::cout << e.what() << std::endl;
+            std::cout << "Error: bad input => " << row << " (double overflowed)" << std::endl;
+            continue ;
+        }
+        if (amount < 0 || amount > max_amount)
+        {
+            if (amount < 0)
+                std::cout << "Error: bad input => " << row << " (not a positive number)" << std::endl;
+            if (amount > max_amount)
+                std::cout << "Error: bad input => " << row << " (too large a number)" << std::endl;
             continue ;
         }
 

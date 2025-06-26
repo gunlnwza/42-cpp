@@ -14,6 +14,7 @@ int	main(int argc, char **argv)
 	}
 
 	const std::string database_file_name = "database/data_head.csv";
+	
 	try {
 		BitcoinExchange	calculator(database_file_name);
 		calculator.evaluate_query(argv[1]);
