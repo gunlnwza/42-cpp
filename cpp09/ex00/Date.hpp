@@ -1,10 +1,11 @@
 #ifndef DATE_HPP
 # define DATE_HPP
 
-# include <string>
 # include <iostream>
 # include <iomanip>
-# include <cstdlib>
+# include <sstream>
+
+# include "ft_utils.hpp"
 
 class Date
 {
@@ -34,6 +35,8 @@ class Date
         int get_year() const;
         int get_month() const;
         int get_day() const;
+
+        std::string get_string() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Date& date);

@@ -4,8 +4,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic
 RM = rm -rf
 
-HEADERS = BitcoinExchange.hpp Date.hpp
-SRCS = main.cpp BitcoinExchange.cpp Date.cpp
+HEADERS = BitcoinExchange.hpp Date.hpp ft_utils.hpp
+SRCS = main.cpp BitcoinExchange.cpp Date.cpp ft_utils.cpp
 OBJS = $(SRCS:%.cpp=%.o)
 
 all: $(NAME)

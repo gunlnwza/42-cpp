@@ -17,7 +17,8 @@ int	main(int argc, char **argv)
 	try {
 		BitcoinExchange	calculator(database_file_name);
 		calculator.evaluate_query(argv[1]);
-	} catch (const std::runtime_error& e) {
+	}
+	catch (const std::runtime_error& e) {
 		std::cout << "Error: " << e.what() << std::endl;
 	}
 

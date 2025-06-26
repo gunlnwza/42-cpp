@@ -37,19 +37,6 @@ static void split_two(const std::string& row, const std::string& delim, std::str
     right = row.substr(idx + delim.length());
 }
 
-double parse_double(const std::string& d_str)
-{
-    char   *ptr;
-    double val;
-
-    errno = 0;
-    val = std::strtod(d_str.c_str(), &ptr);
-    if (*ptr != '\0')
-        throw (std::runtime_error("not a double string '" + d_str + "'"));
-    if (errno == ERANGE || val < -DBL_MAX || val > DBL_MAX)
-        throw (std::runtime_error("double string out-of-range '" + d_str + "'"));
-    return (val);
-}
 
 // load database_file into its map container
 void BitcoinExchange::read_database(const std::string& database_file_name)
@@ -125,8 +112,15 @@ void BitcoinExchange::evaluate_query(const std::string& query_file_name) const
         }
         split_two(row, delim, left, right);
 
-        date.parse_date(left);  // TODO: parse better, refactor Date
-        amount = parse_double(right);
+        try {
+            date.parse_date(left);  // TODO: parse better, refactor Date
+            amount = parse_double(right);
+        }
+        catch (const std::runtime_error& e) {
+            std::cout << e.what() << std::endl;
+            continue ;
+        }
+
         price = this->get_price(date);
         money = amount * price;
 

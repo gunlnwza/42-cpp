@@ -3,7 +3,6 @@
 
 # include <map>
 # include <fstream>
-# include <cfloat>
 
 # include "Date.hpp"
 
