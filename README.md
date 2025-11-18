@@ -62,7 +62,7 @@ Templates and generic programming.
 
 ### CPP08
 
-STL algorithm and container
+STL algorithms and containers.
 
 - How to work with them effectively.
 
