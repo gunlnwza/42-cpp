@@ -8,47 +8,68 @@ Learning Object-Oriented Programming, managing memory safely, and understanding 
 
 ### CPP00
 
-Learn how C maps to C++. Implement simple class. Implement missing implementations from given class boilerplate and test results.
+Mapping C concepts into C++.
+
+- Implement basic classes.
+- Complete missing implementations in provided boilerplate.
 
 ### CPP01
 
-Learn memory management with `new` and `delete`.
-Learn about reference.
-Learn about working with files.
-Learn about string in array + for loop matching trick.
-Learn switch statement.
+Additional basic C++ concepts.
+
+- Manual memory management with `new` and `delete`
+- References
+- File handling
+- CLI parsing tricks (array + loop matching)
+- `switch` statements
 
 ### CPP02
 
-Fixed point number class
+Implementation of a fixed-point number class.
+
+- Some history on representing numbers in computers
+- Operator overloading
 
 ### CPP03
 
-Inheritance
+Introduction to inheritance.
+
+- Implement a base class with core functionality.
+- Implement two subclasses that extend it with special features.
 
 ### CPP04
 
-Polymorphism and abstract class
+Polymorphism.
+
+- Virtual Functions
+- Abstract classes
 
 ### CPP05
 
-Exceptions
+Exceptions and error-handling patterns.
 
 ### CPP06
 
-Learn about useful casting: `static_cast`, `reinterpret_cast`, `dynamic_cast`
+Practical casting in C++.
+
+- `static_cast`
+- `reinterpret_cast`
+- `dynamic_cast`
 
 ### CPP07
 
-Templates
+Templates and generic programming.
 
 ### CPP08
 
-STL algorithm, containers, how to work with them.
+STL algorithm and container
+
+- How to work with them effectively.
 
 ### CPP09
 
-Putting it all together
-- Bitcoin value calculator
+Bringing everything together.
+
+- Bitcoin value calculator based on historical price data
 - Reverse Polish Notation calculator
 - Merge-Insertion sort implementation
