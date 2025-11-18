@@ -1,6 +1,6 @@
 # 42 C++ Modules
 
-A collection of exercises completed in C++ modules during 42 Common Core curriculum, transitioning from C into C++98.
+A collection of exercises completed in C++ modules during the 42 Common Core curriculum, transitioning from C into C++98.
 
 Learning Object-Oriented Programming, managing memory safely, and understanding the foundations of C++ through hands-on problems.
 
@@ -27,7 +27,7 @@ Additional basic C++ concepts.
 
 Implementation of a fixed-point number class.
 
-- Some history on representing numbers in computers
+- Some background on how integers and floating-point numbers are represented in memory
 - Operator overloading
 
 ### CPP03
